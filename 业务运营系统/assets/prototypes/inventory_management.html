@@ -56,6 +56,21 @@
             border-left: 4px solid white;
         }
 
+        .sidebar ul li a {
+            color: white;
+            text-decoration: none;
+            display: block;
+        }
+
+        .sidebar ul li ul {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .sidebar ul li ul li {
+            padding: 8px 15px;
+        }
+
         /* 主内容区域 */
         .main-content {
             flex: 1;
@@ -305,46 +320,46 @@
         <div class="sidebar">
             <h2>业务运营系统</h2>
             <ul>
-                <li><a href="dashboard.html" style="color: white; text-decoration: none;">仪表盘</a></li>
+                <li><a href="dashboard.html">仪表盘</a></li>
                 <li>
                     <span>销售管理</span>
-                    <ul style="margin-left: 20px; margin-top: 10px;">
-                        <li><a href="customer_management.html" style="color: white; text-decoration: none;">客户信息管理</a></li>
-                        <li><a href="opportunity_management.html" style="color: white; text-decoration: none;">商机管理</a></li>
-                        <li><a href="order_management.html" style="color: white; text-decoration: none;">订单管理</a></li>
-                        <li><a href="sales_report.html" style="color: white; text-decoration: none;">销售报表</a></li>
+                    <ul>
+                        <li><a href="customer_management.html">客户信息管理</a></li>
+                        <li><a href="opportunity_management.html">商机管理</a></li>
+                        <li><a href="order_management.html">订单管理</a></li>
+                        <li><a href="sales_report.html">销售报表</a></li>
                     </ul>
                 </li>
                 <li>
                     <span>客服管理</span>
-                    <ul style="margin-left: 20px; margin-top: 10px;">
-                        <li><a href="ticket_management.html" style="color: white; text-decoration: none;">工单管理</a></li>
-                        <li><a href="customer_communication.html" style="color: white; text-decoration: none;">客户沟通</a></li>
-                        <li><a href="service_quality.html" style="color: white; text-decoration: none;">服务质量</a></li>
+                    <ul>
+                        <li><a href="ticket_management.html">工单管理</a></li>
+                        <li><a href="customer_communication.html">客户沟通</a></li>
+                        <li><a href="service_quality.html">服务质量</a></li>
                     </ul>
                 </li>
                 <li class="active">
                     <span>供应链管理</span>
-                    <ul style="margin-left: 20px; margin-top: 10px;">
-                        <li><a href="procurement_management.html" style="color: white; text-decoration: none;">采购管理</a></li>
-                        <li class="active"><a href="inventory_management.html" style="color: white; text-decoration: none;">库存管理</a></li>
-                        <li><a href="supplier_management.html" style="color: white; text-decoration: none;">供应商管理</a></li>
+                    <ul>
+                        <li><a href="procurement_management.html">采购管理</a></li>
+                        <li class="active"><a href="inventory_management.html">库存管理</a></li>
+                        <li><a href="supplier_management.html">供应商管理</a></li>
                     </ul>
                 </li>
                 <li>
                     <span>数据分析</span>
-                    <ul style="margin-left: 20px; margin-top: 10px;">
-                        <li><a href="data_dashboard.html" style="color: white; text-decoration: none;">数据看板</a></li>
-                        <li><a href="report_generation.html" style="color: white; text-decoration: none;">报表生成</a></li>
-                        <li><a href="data_analysis.html" style="color: white; text-decoration: none;">数据分析</a></li>
+                    <ul>
+                        <li><a href="data_analysis.html">数据看板</a></li>
+                        <li><a href="report_generation.html">报表生成</a></li>
+                        <li><a href="data_analysis.html">数据分析</a></li>
                     </ul>
                 </li>
                 <li>
                     <span>系统管理</span>
-                    <ul style="margin-left: 20px; margin-top: 10px;">
-                        <li><a href="user_management.html" style="color: white; text-decoration: none;">用户管理</a></li>
-                        <li><a href="permission_management.html" style="color: white; text-decoration: none;">权限管理</a></li>
-                        <li><a href="system_configuration.html" style="color: white; text-decoration: none;">系统配置</a></li>
+                    <ul>
+                        <li><a href="user_management.html">用户管理</a></li>
+                        <li><a href="permission_management.html">权限管理</a></li>
+                        <li><a href="system_configuration.html">系统配置</a></li>
                     </ul>
                 </li>
             </ul>
