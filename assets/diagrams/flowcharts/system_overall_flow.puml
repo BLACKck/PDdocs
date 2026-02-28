@@ -1,0 +1,35 @@
+@startuml
+
+skinparam backgroundColor #FFFFFF
+skinparam activityFontSize 12
+skinparam activityFontStyle bold
+skinparam arrowFontSize 10
+
+start
+:用户登录;
+:系统初始化;
+:进入仪表盘;
+diamond "选择模块" as chooseModule
+chooseModule --> "销售管理" as salesModule
+chooseModule --> "客服管理" as serviceModule
+chooseModule --> "供应链管理" as supplyModule
+chooseModule --> "数据分析" as dataModule
+chooseModule --> "系统管理" as systemModule
+
+salesModule --> :操作;
+serviceModule --> :操作;
+supplyModule --> :操作;
+dataModule --> :操作;
+systemModule --> :操作;
+
+:操作; --> :返回仪表盘;
+:返回仪表盘; --> diamond "继续操作?" as continue
+continue --> "是" as yes
+continue --> "否" as no
+
+yes --> chooseModule
+no --> :用户退出;
+
+stop
+
+@enduml

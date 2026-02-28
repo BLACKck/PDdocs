@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>订单管理 - 业务运营系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* 侧边导航栏 */
+        .sidebar {
+            width: 240px;
+            background-color: #1976D2;
+            color: white;
+            padding: 20px 0;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .sidebar ul {
+            list-style: none;
+        }
+
+        .sidebar ul li {
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .sidebar ul li:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar ul li.active {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-left: 4px solid white;
+        }
+
+        /* 主内容区域 */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 顶部导航栏 */
+        .topbar {
+            background-color: white;
+            padding: 15px 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .topbar h1 {
+            font-size: 20px;
+            font-weight: 500;
+            color: #1976D2;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-info span {
+            margin-right: 10px;
+        }
+
+        .user-info img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+        }
+
+        /* 内容区域 */
+        .content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        /* 卡片样式 */
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .card-header h2 {
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            background-color: #1976D2;
+            color: white;
+        }
+
+        .btn-secondary {
+            background-color: #f5f5f5;
+            color: #333;
+            margin-right: 10px;
+        }
+
+        /* 搜索和筛选 */
+        .search-filter {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .search-filter input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .search-filter select {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        /* 表格样式 */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f5f5f5;
+            font-weight: 500;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        /* 分页 */
+        .pagination {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+            gap: 5px;
+        }
+
+        .pagination button {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            background-color: white;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .pagination button.active {
+            background-color: #1976D2;
+            color: white;
+            border-color: #1976D2;
+        }
+
+        /* 表单样式 */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        /* 模态框 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 500px;
+            max-width: 90%;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .close {
+            cursor: pointer;
+            font-size: 24px;
+            color: #999;
+        }
+
+        /* 状态标签 */
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-pending {
+            background-color: #fff3e0;
+            color: #ff9800;
+        }
+
+        .status-confirmed {
+            background-color: #e3f2fd;
+            color: #1976D2;
+        }
+
+        .status-shipped {
+            background-color: #e8f5e8;
+            color: #4caf50;
+        }
+
+        .status-completed {
+            background-color: #f3e5f5;
+            color: #9c27b0;
+        }
+
+        .status-cancelled {
+            background-color: #ffebee;
+            color: #f44336;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 侧边导航栏 -->
+        <div class="sidebar">
+            <h2>业务运营系统</h2>
+            <ul>
+                <li><a href="dashboard.html" style="color: white; text-decoration: none;">仪表盘</a></li>
+                <li class="active">
+                    <span>销售管理</span>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li><a href="customer_management.html" style="color: white; text-decoration: none;">客户信息管理</a></li>
+                        <li><a href="opportunity_management.html" style="color: white; text-decoration: none;">商机管理</a></li>
+                        <li class="active"><a href="order_management.html" style="color: white; text-decoration: none;">订单管理</a></li>
+                        <li><a href="sales_report.html" style="color: white; text-decoration: none;">销售报表</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <span>客服管理</span>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li><a href="ticket_management.html" style="color: white; text-decoration: none;">工单管理</a></li>
+                        <li><a href="customer_communication.html" style="color: white; text-decoration: none;">客户沟通</a></li>
+                        <li><a href="service_quality.html" style="color: white; text-decoration: none;">服务质量</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <span>供应链管理</span>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li><a href="procurement_management.html" style="color: white; text-decoration: none;">采购管理</a></li>
+                        <li><a href="inventory_management.html" style="color: white; text-decoration: none;">库存管理</a></li>
+                        <li><a href="supplier_management.html" style="color: white; text-decoration: none;">供应商管理</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <span>数据分析</span>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li><a href="data_dashboard.html" style="color: white; text-decoration: none;">数据看板</a></li>
+                        <li><a href="report_generation.html" style="color: white; text-decoration: none;">报表生成</a></li>
+                        <li><a href="data_analysis.html" style="color: white; text-decoration: none;">数据分析</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <span>系统管理</span>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li><a href="user_management.html" style="color: white; text-decoration: none;">用户管理</a></li>
+                        <li><a href="permission_management.html" style="color: white; text-decoration: none;">权限管理</a></li>
+                        <li><a href="system_configuration.html" style="color: white; text-decoration: none;">系统配置</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <!-- 主内容区域 -->
+        <div class="main-content">
+            <!-- 顶部导航栏 -->
+            <div class="topbar">
+                <h1>订单管理</h1>
+                <div class="user-info">
+                    <span>管理员</span>
+                    <img src="https://via.placeholder.com/32" alt="用户头像">
+                </div>
+            </div>
+
+            <!-- 内容区域 -->
+            <div class="content">
+                <!-- 搜索和筛选 -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2>订单列表</h2>
+                        <button class="btn btn-primary" onclick="openModal('addModal')">新增订单</button>
+                    </div>
+                    <div class="search-filter">
+                        <input type="text" placeholder="搜索订单...">
+                        <select>
+                            <option>全部状态</option>
+                            <option>待确认</option>
+                            <option>已确认</option>
+                            <option>已发货</option>
+                            <option>已完成</option>
+                            <option>已取消</option>
+                        </select>
+                        <select>
+                            <option>全部客户</option>
+                            <option>科技有限公司</option>
+                            <option>金融服务公司</option>
+                            <option>制造企业</option>
+                        </select>
+                        <button class="btn btn-secondary">筛选</button>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>订单ID</th>
+                                    <th>客户</th>
+                                    <th>订单金额</th>
+                                    <th>订单日期</th>
+                                    <th>交付日期</th>
+                                    <th>状态</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>ORD001</td>
+                                    <td>科技有限公司</td>
+                                    <td>¥500,000</td>
+                                    <td>2026-03-01</td>
+                                    <td>2026-03-15</td>
+                                    <td><span class="status-badge status-confirmed">已确认</span></td>
+                                    <td>
+                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;">编辑</button>
+                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;">详情</button>
+                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;">取消</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>ORD002</td>
+                                    <td>金融服务公司</td>
+                                    <td>¥800,000</td>
+                                    <td>2026-03-02</td>
+                                    <td>2026-03-20</td>
+                                    <td><span class="status-badge status-shipped">已发货</span></td>
+                                    <td>
+                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;">编辑</button>
+                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;">详情</button>
+                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;">取消</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>ORD003</td>
+                                    <td>制造企业</td>
+                                    <td>¥300,000</td>
+                                    <td>2026-03-03</td>
+                                    <td>2026-03-25</td>
+                                    <td><span class="status-badge status-pending">待确认</span></td>
+                                    <td>
+                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;">编辑</button>
+                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;">详情</button>
+                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;">取消</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="pagination">
+                        <button>上一页</button>
+                        <button class="active">1</button>
+                        <button>2</button>
+                        <button>3</button>
+                        <button>下一页</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 新增订单模态框 -->
+    <div id="addModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>新增订单</h2>
+                <span class="close" onclick="closeModal('addModal')">&times;</span>
+            </div>
+            <form>
+                <div class="form-group">
+                    <label>客户</label>
+                    <select required>
+                        <option value="">请选择客户</option>
+                        <option value="001">科技有限公司</option>
+                        <option value="002">金融服务公司</option>
+                        <option value="003">制造企业</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>订单金额</label>
+                    <input type="number" required>
+                </div>
+                <div class="form-group">
+                    <label>订单日期</label>
+                    <input type="date" required>
+                </div>
+                <div class="form-group">
+                    <label>交付日期</label>
+                    <input type="date" required>
+                </div>
+                <div class="form-group">
+                    <label>状态</label>
+                    <select required>
+                        <option value="pending">待确认</option>
+                        <option value="confirmed">已确认</option>
+                        <option value="shipped">已发货</option>
+                        <option value="completed">已完成</option>
+                        <option value="cancelled">已取消</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>描述</label>
+                    <textarea></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('addModal')">取消</button>
+                    <button type="submit" class="btn btn-primary">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'block';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // 点击模态框外部关闭
+        window.onclick = function(event) {
+            var modals = document.getElementsByClassName('modal');
+            for (var i = 0; i < modals.length; i++) {
+                if (event.target == modals[i]) {
+                    modals[i].style.display = 'none';
+                }
+            }
+        }
+    </script>
+</body>
+</html>

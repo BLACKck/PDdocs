@@ -1,0 +1,115 @@
+@startuml
+
+!define RECTANGLE class
+!define CARD class
+!define PACKAGE package
+
+skinparam backgroundColor #FFFFFF
+skinparam componentStyle rectangle
+skinparam classFontSize 12
+skinparam classFontStyle bold
+skinparam arrowFontSize 10
+
+PACKAGE "前端应用层" {
+  RECTANGLE "销售管理模块界面"
+  RECTANGLE "客服管理模块界面"
+  RECTANGLE "供应链管理模块界面"
+  RECTANGLE "数据分析模块界面"
+  RECTANGLE "系统管理模块界面"
+}
+
+PACKAGE "API网关层" {
+  RECTANGLE "认证授权"
+  RECTANGLE "请求路由"
+  RECTANGLE "流量控制"
+}
+
+PACKAGE "后端服务层" {
+  PACKAGE "销售管理服务" {
+    RECTANGLE "客户管理"
+    RECTANGLE "商机管理"
+    RECTANGLE "订单管理"
+    RECTANGLE "销售报表"
+  }
+  
+  PACKAGE "客服管理服务" {
+    RECTANGLE "工单管理"
+    RECTANGLE "客户沟通"
+    RECTANGLE "服务质量"
+  }
+  
+  PACKAGE "供应链管理服务" {
+    RECTANGLE "采购管理"
+    RECTANGLE "库存管理"
+    RECTANGLE "供应商管理"
+  }
+  
+  PACKAGE "数据分析服务" {
+    RECTANGLE "数据看板"
+    RECTANGLE "报表生成"
+    RECTANGLE "数据分析"
+  }
+  
+  PACKAGE "系统管理服务" {
+    RECTANGLE "用户管理"
+    RECTANGLE "权限管理"
+    RECTANGLE "系统配置"
+  }
+  
+  PACKAGE "公共服务" {
+    RECTANGLE "通知服务"
+    RECTANGLE "日志服务"
+    RECTANGLE "文件服务"
+  }
+}
+
+PACKAGE "数据存储层" {
+  RECTANGLE "关系型数据库\n(MySQL/PostgreSQL)"
+  RECTANGLE "缓存\n(Redis)"
+  RECTANGLE "消息队列\n(RabbitMQ/Kafka)"
+  RECTANGLE "文件存储\n(对象存储/文件系统)"
+}
+
+' 前端应用层 -> API网关层
+"销售管理模块界面" --> "认证授权"
+"客服管理模块界面" --> "认证授权"
+"供应链管理模块界面" --> "认证授权"
+"数据分析模块界面" --> "认证授权"
+"系统管理模块界面" --> "认证授权"
+
+' API网关层 -> 后端服务层
+"认证授权" --> "客户管理"
+"认证授权" --> "工单管理"
+"认证授权" --> "采购管理"
+"认证授权" --> "数据看板"
+"认证授权" --> "用户管理"
+
+' 后端服务层 -> 数据存储层
+"客户管理" --> "关系型数据库\n(MySQL/PostgreSQL)"
+"商机管理" --> "关系型数据库\n(MySQL/PostgreSQL)"
+"订单管理" --> "关系型数据库\n(MySQL/PostgreSQL)"
+"销售报表" --> "关系型数据库\n(MySQL/PostgreSQL)"
+"销售报表" --> "缓存\n(Redis)"
+
+"工单管理" --> "关系型数据库\n(MySQL/PostgreSQL)"
+"客户沟通" --> "关系型数据库\n(MySQL/PostgreSQL)"
+"服务质量" --> "关系型数据库\n(MySQL/PostgreSQL)"
+
+"采购管理" --> "关系型数据库\n(MySQL/PostgreSQL)"
+"库存管理" --> "关系型数据库\n(MySQL/PostgreSQL)"
+"供应商管理" --> "关系型数据库\n(MySQL/PostgreSQL)"
+
+"数据看板" --> "关系型数据库\n(MySQL/PostgreSQL)"
+"数据看板" --> "缓存\n(Redis)"
+"报表生成" --> "关系型数据库\n(MySQL/PostgreSQL)"
+"数据分析" --> "关系型数据库\n(MySQL/PostgreSQL)"
+
+"用户管理" --> "关系型数据库\n(MySQL/PostgreSQL)"
+"权限管理" --> "关系型数据库\n(MySQL/PostgreSQL)"
+"系统配置" --> "关系型数据库\n(MySQL/PostgreSQL)"
+
+"通知服务" --> "消息队列\n(RabbitMQ/Kafka)"
+"日志服务" --> "关系型数据库\n(MySQL/PostgreSQL)"
+"文件服务" --> "文件存储\n(对象存储/文件系统)"
+
+@enduml
