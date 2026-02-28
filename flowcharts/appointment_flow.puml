@@ -1,0 +1,65 @@
+@startuml
+!define RECTANGLE class
+!define CIRCLE ()
+!define DIAMOND diamond
+!define ARROW -->
+
+' 预约流程
+start
+:用户登录系统;
+:进入预约服务页面;
+diamond "选择预约类型" as AppointmentType {
+  -> 看病预约;
+  -> 疫苗接种预约;
+  -> 体检预约;
+}
+
+' 看病预约流程
+if (看病预约) then (是)
+  :选择宠物医院;
+  :选择医生;
+  :选择预约时间;
+  :填写症状描述;
+  :提交预约申请;
+else (否)
+  if (疫苗接种预约) then (是)
+    :选择疫苗类型;
+    :选择接种时间;
+    :提交预约申请;
+  else (否)
+    if (体检预约) then (是)
+      :选择体检套餐;
+      :选择预约时间;
+      :提交预约申请;
+    else (否)
+      :返回上一步;
+    endif
+  endif
+endif
+
+:系统生成预约订单;
+:预约成功通知;
+:用户查看预约记录;
+diamond "是否需要修改/取消" as ModifyCancel {
+  -> 是;
+  -> 否;
+}
+
+if (需要修改/取消) then (是)
+  :进入预约管理页面;
+  :选择要修改/取消的预约;
+  if (修改预约) then (是)
+    :重新选择预约信息;
+    :提交修改申请;
+  else (否)
+    :提交取消申请;
+  endif
+  :系统更新预约状态;
+  :通知用户;
+else (否)
+  :预约流程结束;
+endif
+
+stop
+
+@enduml

@@ -359,7 +359,11 @@
                 <div class="card">
                     <div class="card-header">
                         <h2>客户列表</h2>
-                        <button class="btn btn-primary" onclick="openModal('addModal')">新增客户</button>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn btn-primary" onclick="openModal('addModal')">新增客户</button>
+                            <button class="btn btn-secondary" onclick="importCustomers()">导入</button>
+                            <button class="btn btn-secondary" onclick="exportCustomers()">导出</button>
+                        </div>
                     </div>
                     <div class="search-filter">
                         <input type="text" placeholder="搜索客户...">
@@ -400,9 +404,9 @@
                                     <td>科技</td>
                                     <td>活跃</td>
                                     <td>
-                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;">编辑</button>
-                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;">详情</button>
-                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;">删除</button>
+                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;" onclick="openModal('editModal')">编辑</button>
+                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;" onclick="openModal('detailModal')">详情</button>
+                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;" onclick="deleteCustomer('001')">删除</button>
                                     </td>
                                 </tr>
                                 <tr>
@@ -413,9 +417,9 @@
                                     <td>金融</td>
                                     <td>活跃</td>
                                     <td>
-                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;">编辑</button>
-                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;">详情</button>
-                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;">删除</button>
+                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;" onclick="openModal('editModal')">编辑</button>
+                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;" onclick="openModal('detailModal')">详情</button>
+                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;" onclick="deleteCustomer('001')">删除</button>
                                     </td>
                                 </tr>
                                 <tr>
@@ -426,9 +430,9 @@
                                     <td>制造</td>
                                     <td>潜在</td>
                                     <td>
-                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;">编辑</button>
-                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;">详情</button>
-                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;">删除</button>
+                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;" onclick="openModal('editModal')">编辑</button>
+                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;" onclick="openModal('detailModal')">详情</button>
+                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;" onclick="deleteCustomer('001')">删除</button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -494,9 +498,110 @@
                 </div>
                 <div class="form-actions">
                     <button type="button" class="btn btn-secondary" onclick="closeModal('addModal')">取消</button>
-                    <button type="submit" class="btn btn-primary">保存</button>
+                    <button type="submit" class="btn btn-primary" onclick="saveCustomer()">保存</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- 编辑客户模态框 -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>编辑客户</h2>
+                <span class="close" onclick="closeModal('editModal')">&times;</span>
+            </div>
+            <form>
+                <div class="form-group">
+                    <label>公司名称</label>
+                    <input type="text" value="科技有限公司" required>
+                </div>
+                <div class="form-group">
+                    <label>联系人</label>
+                    <input type="text" value="张三" required>
+                </div>
+                <div class="form-group">
+                    <label>电话</label>
+                    <input type="tel" value="13800138000" required>
+                </div>
+                <div class="form-group">
+                    <label>邮箱</label>
+                    <input type="email" value="zhangsan@example.com">
+                </div>
+                <div class="form-group">
+                    <label>行业</label>
+                    <select required>
+                        <option value="tech" selected>科技</option>
+                        <option value="finance">金融</option>
+                        <option value="manufacturing">制造</option>
+                        <option value="retail">零售</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>地址</label>
+                    <textarea>北京市海淀区</textarea>
+                </div>
+                <div class="form-group">
+                    <label>状态</label>
+                    <select required>
+                        <option value="active" selected>活跃</option>
+                        <option value="potential">潜在</option>
+                        <option value="dormant">休眠</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('editModal')">取消</button>
+                    <button type="submit" class="btn btn-primary" onclick="updateCustomer()">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 客户详情模态框 -->
+    <div id="detailModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>客户详情</h2>
+                <span class="close" onclick="closeModal('detailModal')">&times;</span>
+            </div>
+            <div style="padding: 20px;">
+                <div style="margin-bottom: 15px;">
+                    <strong>客户ID:</strong> 001
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <strong>公司名称:</strong> 科技有限公司
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <strong>联系人:</strong> 张三
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <strong>电话:</strong> 13800138000
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <strong>邮箱:</strong> zhangsan@example.com
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <strong>行业:</strong> 科技
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <strong>地址:</strong> 北京市海淀区
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <strong>状态:</strong> 活跃
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <strong>创建时间:</strong> 2026-01-01 10:00:00
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <strong>更新时间:</strong> 2026-02-01 14:30:00
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <strong>创建人:</strong> 管理员
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('detailModal')">关闭</button>
+            </div>
         </div>
     </div>
 
@@ -517,6 +622,35 @@
                     modals[i].style.display = 'none';
                 }
             }
+        }
+
+        // 导入客户
+        function importCustomers() {
+            alert('导入成功，共导入X条记录');
+        }
+
+        // 导出客户
+        function exportCustomers() {
+            alert('导出成功');
+        }
+
+        // 删除客户确认
+        function deleteCustomer(customerId) {
+            if (confirm('确定要删除该客户吗？')) {
+                alert('客户信息删除成功');
+            }
+        }
+
+        // 保存客户
+        function saveCustomer() {
+            alert('客户信息添加成功');
+            closeModal('addModal');
+        }
+
+        // 更新客户
+        function updateCustomer() {
+            alert('客户信息更新成功');
+            closeModal('editModal');
         }
     </script>
 </body>

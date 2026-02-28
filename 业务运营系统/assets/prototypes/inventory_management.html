@@ -382,10 +382,11 @@
                 <div class="card">
                     <div class="card-header">
                         <h2>库存列表</h2>
-                        <div>
-                            <button class="btn btn-secondary">入库</button>
-                            <button class="btn btn-secondary">出库</button>
-                            <button class="btn btn-primary">库存盘点</button>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn btn-primary" onclick="openModal('addModal')">新增</button>
+                            <button class="btn btn-secondary" onclick="openModal('inboundModal')">入库</button>
+                            <button class="btn btn-secondary" onclick="openModal('outboundModal')">出库</button>
+                            <button class="btn btn-secondary" onclick="openModal('inventoryModal')">盘点</button>
                         </div>
                     </div>
                     <div class="search-filter">
@@ -428,8 +429,9 @@
                                     <td><span class="stock-status stock-normal">正常</span></td>
                                     <td>2026-03-01</td>
                                     <td>
-                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;">详情</button>
-                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;">编辑</button>
+                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;" onclick="openModal('detailModal')">详情</button>
+                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;" onclick="openModal('editModal')">编辑</button>
+                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;" onclick="deleteProduct('P001')">删除</button>
                                     </td>
                                 </tr>
                                 <tr>
@@ -441,8 +443,9 @@
                                     <td><span class="stock-status stock-low">库存不足</span></td>
                                     <td>2026-03-02</td>
                                     <td>
-                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;">详情</button>
-                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;">编辑</button>
+                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;" onclick="openModal('detailModal')">详情</button>
+                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;" onclick="openModal('editModal')">编辑</button>
+                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;" onclick="deleteProduct('P001')">删除</button>
                                     </td>
                                 </tr>
                                 <tr>
@@ -454,8 +457,9 @@
                                     <td><span class="stock-status stock-out">缺货</span></td>
                                     <td>2026-03-03</td>
                                     <td>
-                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;">详情</button>
-                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;">编辑</button>
+                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;" onclick="openModal('detailModal')">详情</button>
+                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;" onclick="openModal('editModal')">编辑</button>
+                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;" onclick="deleteProduct('P001')">删除</button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -470,6 +474,250 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- 新增产品模态框 -->
+    <div id="addModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>新增产品</h2>
+                <span class="close" onclick="closeModal('addModal')">&times;</span>
+            </div>
+            <form>
+                <div class="form-group">
+                    <label>产品名称</label>
+                    <input type="text" required>
+                </div>
+                <div class="form-group">
+                    <label>分类</label>
+                    <select required>
+                        <option value="">请选择分类</option>
+                        <option value="electronics">电子产品</option>
+                        <option value="office">办公用品</option>
+                        <option value="raw">原材料</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>当前库存</label>
+                    <input type="number" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label>安全库存</label>
+                    <input type="number" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label>单位</label>
+                    <input type="text" required>
+                </div>
+                <div class="form-group">
+                    <label>单价</label>
+                    <input type="number" min="0" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label>描述</label>
+                    <textarea></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('addModal')">取消</button>
+                    <button type="submit" class="btn btn-primary" onclick="saveProduct()">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 编辑产品模态框 -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>编辑产品</h2>
+                <span class="close" onclick="closeModal('editModal')">&times;</span>
+            </div>
+            <form>
+                <div class="form-group">
+                    <label>产品名称</label>
+                    <input type="text" value="笔记本电脑" required>
+                </div>
+                <div class="form-group">
+                    <label>分类</label>
+                    <select required>
+                        <option value="electronics" selected>电子产品</option>
+                        <option value="office">办公用品</option>
+                        <option value="raw">原材料</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>当前库存</label>
+                    <input type="number" value="50" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label>安全库存</label>
+                    <input type="number" value="20" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label>单位</label>
+                    <input type="text" value="台" required>
+                </div>
+                <div class="form-group">
+                    <label>单价</label>
+                    <input type="number" value="5000" min="0" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label>描述</label>
+                    <textarea>高性能笔记本电脑</textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('editModal')">取消</button>
+                    <button type="submit" class="btn btn-primary" onclick="updateProduct()">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 产品详情模态框 -->
+    <div id="detailModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>产品详情</h2>
+                <span class="close" onclick="closeModal('detailModal')">&times;</span>
+            </div>
+            <div style="padding: 20px;">
+                <div style="margin-bottom: 15px;">
+                    <strong>产品ID:</strong> P001
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <strong>产品名称:</strong> 笔记本电脑
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <strong>分类:</strong> 电子产品
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <strong>当前库存:</strong> 50
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <strong>安全库存:</strong> 20
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <strong>单位:</strong> 台
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <strong>单价:</strong> ¥5000
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <strong>状态:</strong> 正常
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <strong>描述:</strong> 高性能笔记本电脑
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <strong>创建时间:</strong> 2026-01-01 10:00:00
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <strong>更新时间:</strong> 2026-03-01 14:30:00
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('detailModal')">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 入库模态框 -->
+    <div id="inboundModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>入库</h2>
+                <span class="close" onclick="closeModal('inboundModal')">&times;</span>
+            </div>
+            <form>
+                <div class="form-group">
+                    <label>产品</label>
+                    <select required>
+                        <option value="">请选择产品</option>
+                        <option value="P001">笔记本电脑</option>
+                        <option value="P002">打印机</option>
+                        <option value="P003">原材料A</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>入库数量</label>
+                    <input type="number" min="1" required>
+                </div>
+                <div class="form-group">
+                    <label>入库原因</label>
+                    <textarea required></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('inboundModal')">取消</button>
+                    <button type="submit" class="btn btn-primary" onclick="inboundProduct()">确认入库</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 出库模态框 -->
+    <div id="outboundModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>出库</h2>
+                <span class="close" onclick="closeModal('outboundModal')">&times;</span>
+            </div>
+            <form>
+                <div class="form-group">
+                    <label>产品</label>
+                    <select required>
+                        <option value="">请选择产品</option>
+                        <option value="P001">笔记本电脑</option>
+                        <option value="P002">打印机</option>
+                        <option value="P003">原材料A</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>出库数量</label>
+                    <input type="number" min="1" required>
+                </div>
+                <div class="form-group">
+                    <label>出库原因</label>
+                    <textarea required></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('outboundModal')">取消</button>
+                    <button type="submit" class="btn btn-primary" onclick="outboundProduct()">确认出库</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 库存盘点模态框 -->
+    <div id="inventoryModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>库存盘点</h2>
+                <span class="close" onclick="closeModal('inventoryModal')">&times;</span>
+            </div>
+            <form>
+                <div class="form-group">
+                    <label>产品</label>
+                    <select required>
+                        <option value="">请选择产品</option>
+                        <option value="P001">笔记本电脑</option>
+                        <option value="P002">打印机</option>
+                        <option value="P003">原材料A</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>实际库存</label>
+                    <input type="number" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label>盘点原因</label>
+                    <textarea required></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('inventoryModal')">取消</button>
+                    <button type="submit" class="btn btn-primary" onclick="inventoryProduct()">确认盘点</button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -490,6 +738,43 @@
                     modals[i].style.display = 'none';
                 }
             }
+        }
+
+        // 保存产品
+        function saveProduct() {
+            alert('产品信息添加成功');
+            closeModal('addModal');
+        }
+
+        // 更新产品
+        function updateProduct() {
+            alert('产品信息更新成功');
+            closeModal('editModal');
+        }
+
+        // 删除产品
+        function deleteProduct(productId) {
+            if (confirm('确定要删除该产品吗？')) {
+                alert('产品信息删除成功');
+            }
+        }
+
+        // 入库
+        function inboundProduct() {
+            alert('入库成功');
+            closeModal('inboundModal');
+        }
+
+        // 出库
+        function outboundProduct() {
+            alert('出库成功');
+            closeModal('outboundModal');
+        }
+
+        // 盘点
+        function inventoryProduct() {
+            alert('盘点完成');
+            closeModal('inventoryModal');
         }
     </script>
 </body>

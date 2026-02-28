@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>爱宠宝宝 - 宠物信息管理</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        /* 侧边栏 */
+        .sidebar {
+            width: 250px;
+            background-color: #333;
+            color: white;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            padding: 20px;
+        }
+        
+        .sidebar .logo {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .sidebar .nav-menu {
+            list-style: none;
+        }
+        
+        .sidebar .nav-menu li {
+            margin-bottom: 10px;
+        }
+        
+        .sidebar .nav-menu a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            padding: 10px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .sidebar .nav-menu a:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+        
+        .sidebar .nav-menu a.active {
+            background-color: #4CAF50;
+        }
+        
+        /* 顶部导航 */
+        .top-nav {
+            margin-left: 250px;
+            background-color: white;
+            padding: 15px 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .top-nav .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .top-nav .user-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+        
+        .top-nav .logout {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        /* 主内容 */
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+        
+        /* 页面标题 */
+        .page-title {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .page-title h1 {
+            color: #333;
+        }
+        
+        .page-title .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .page-title .btn-primary {
+            background-color: #4CAF50;
+            color: white;
+        }
+        
+        /* 搜索栏 */
+        .search-bar {
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .search-group {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .search-group label {
+            font-weight: bold;
+        }
+        
+        .search-group input,
+        .search-group select {
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .search-group .btn {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+        }
+        
+        /* 宠物列表 */
+        .pet-list {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .pet-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .pet-table th,
+        .pet-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .pet-table th {
+            background-color: #f5f5f5;
+            font-weight: bold;
+        }
+        
+        .pet-table tr:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .action-buttons .btn {
+            padding: 4px 8px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .action-buttons .btn-primary {
+            background-color: #4CAF50;
+            color: white;
+        }
+        
+        .action-buttons .btn-secondary {
+            background-color: #007bff;
+            color: white;
+        }
+        
+        .action-buttons .btn-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+        
+        /* 模态框 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 8px;
+        }
+        
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .close:hover {
+            color: black;
+        }
+        
+        /* 表单样式 */
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: flex-end;
+        }
+        
+        .form-actions .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .form-actions .btn-primary {
+            background-color: #4CAF50;
+            color: white;
+        }
+        
+        .form-actions .btn-secondary {
+            background-color: #666;
+            color: white;
+        }
+        
+        /* 健康记录 */
+        .health-records {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .health-records h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .record-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .record-item:last-child {
+            border-bottom: none;
+        }
+        
+        .record-item .record-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .record-item .record-type {
+            font-weight: bold;
+            color: #4CAF50;
+        }
+        
+        .record-item .record-date {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            
+            .top-nav {
+                margin-left: 0;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .search-bar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .pet-table {
+                font-size: 14px;
+            }
+            
+            .pet-table th,
+            .pet-table td {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 侧边栏 -->
+    <aside class="sidebar">
+        <div class="logo">爱宠宝宝管理系统</div>
+        <ul class="nav-menu">
+            <li><a href="dashboard.html">仪表盘</a></li>
+            <li><a href="pet-management.html" class="active">宠物信息管理</a></li>
+            <li><a href="product-management.html">商品管理</a></li>
+            <li><a href="order-management.html">订单管理</a></li>
+            <li><a href="user-management.html">用户管理</a></li>
+            <li><a href="data-analysis.html">数据分析</a></li>
+            <li><a href="system-config.html">系统配置</a></li>
+        </ul>
+    </aside>
+    
+    <!-- 顶部导航 -->
+    <nav class="top-nav">
+        <h1>宠物信息管理</h1>
+        <div class="user-info">
+            <span>管理员</span>
+            <img src="https://neeko-copilot.bytedance.net/api/text2image?prompt=admin%20avatar&size=512x512" alt="用户头像">
+            <button class="logout" onclick="logout()">退出登录</button>
+        </div>
+    </nav>
+    
+    <!-- 主内容 -->
+    <main class="main-content">
+        <!-- 页面标题 -->
+        <div class="page-title">
+            <h1>宠物档案管理</h1>
+            <button class="btn btn-primary" onclick="openAddPetModal()">添加宠物</button>
+        </div>
+        
+        <!-- 搜索栏 -->
+        <div class="search-bar">
+            <div class="search-group">
+                <label for="petName">宠物姓名</label>
+                <input type="text" id="petName" placeholder="请输入宠物姓名">
+            </div>
+            <div class="search-group">
+                <label for="petType">宠物品种</label>
+                <select id="petType">
+                    <option value="">全品种</option>
+                    <option value="dog">狗狗</option>
+                    <option value="cat">猫咪</option>
+                    <option value="other">其他</option>
+                </select>
+            </div>
+            <div class="search-group">
+                <label for="ownerName">主人姓名</label>
+                <input type="text" id="ownerName" placeholder="请输入主人姓名">
+            </div>
+            <div class="search-group">
+                <button class="btn" onclick="searchPets()">搜索</button>
+            </div>
+        </div>
+        
+        <!-- 宠物列表 -->
+        <div class="pet-list">
+            <table class="pet-table">
+                <thead>
+                    <tr>
+                        <th>宠物ID</th>
+                        <th>宠物姓名</th>
+                        <th>品种</th>
+                        <th>年龄</th>
+                        <th>性别</th>
+                        <th>主人姓名</th>
+                        <th>联系电话</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>PET001</td>
+                        <td>小白</td>
+                        <td>萨摩耶</td>
+                        <td>2岁</td>
+                        <td>男</td>
+                        <td>张三</td>
+                        <td>13800138000</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn-primary" onclick="openEditPetModal('PET001')">编辑</button>
+                                <button class="btn btn-secondary" onclick="openHealthRecords('PET001')">健康记录</button>
+                                <button class="btn btn-danger" onclick="deletePet('PET001')">删除</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>PET002</td>
+                        <td>小黑</td>
+                        <td>拉布拉多</td>
+                        <td>1岁</td>
+                        <td>男</td>
+                        <td>李四</td>
+                        <td>13900139000</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn-primary" onclick="openEditPetModal('PET002')">编辑</button>
+                                <button class="btn btn-secondary" onclick="openHealthRecords('PET002')">健康记录</button>
+                                <button class="btn btn-danger" onclick="deletePet('PET002')">删除</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>PET003</td>
+                        <td>咪咪</td>
+                        <td>英短</td>
+                        <td>3岁</td>
+                        <td>女</td>
+                        <td>王五</td>
+                        <td>13700137000</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn-primary" onclick="openEditPetModal('PET003')">编辑</button>
+                                <button class="btn btn-secondary" onclick="openHealthRecords('PET003')">健康记录</button>
+                                <button class="btn btn-danger" onclick="deletePet('PET003')">删除</button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- 健康记录 -->
+        <div class="health-records" id="healthRecords" style="display: none;">
+            <h2>宠物健康记录</h2>
+            <button class="btn btn-primary" onclick="openAddHealthRecordModal()" style="margin-bottom: 20px;">添加健康记录</button>
+            <div id="recordsList">
+                <!-- 健康记录将在这里动态生成 -->
+            </div>
+        </div>
+    </main>
+    
+    <!-- 添加宠物模态框 -->
+    <div id="addPetModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeAddPetModal()">&times;</span>
+            <h2>添加宠物</h2>
+            <form onsubmit="handleAddPet(event)">
+                <div class="form-group">
+                    <label for="addPetName">宠物姓名</label>
+                    <input type="text" id="addPetName" required>
+                </div>
+                <div class="form-group">
+                    <label for="addPetType">宠物品种</label>
+                    <input type="text" id="addPetType" required>
+                </div>
+                <div class="form-group">
+                    <label for="addPetAge">年龄</label>
+                    <input type="text" id="addPetAge" required>
+                </div>
+                <div class="form-group">
+                    <label for="addPetGender">性别</label>
+                    <select id="addPetGender" required>
+                        <option value="">请选择</option>
+                        <option value="male">男</option>
+                        <option value="female">女</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="addOwnerName">主人姓名</label>
+                    <input type="text" id="addOwnerName" required>
+                </div>
+                <div class="form-group">
+                    <label for="addOwnerPhone">联系电话</label>
+                    <input type="tel" id="addOwnerPhone" required>
+                </div>
+                <div class="form-actions">
+                    <button class="btn btn-secondary" onclick="closeAddPetModal()">取消</button>
+                    <button class="btn btn-primary" type="submit">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- 编辑宠物模态框 -->
+    <div id="editPetModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeEditPetModal()">&times;</span>
+            <h2>编辑宠物信息</h2>
+            <form onsubmit="handleEditPet(event)">
+                <input type="hidden" id="editPetId">
+                <div class="form-group">
+                    <label for="editPetName">宠物姓名</label>
+                    <input type="text" id="editPetName" required>
+                </div>
+                <div class="form-group">
+                    <label for="editPetType">宠物品种</label>
+                    <input type="text" id="editPetType" required>
+                </div>
+                <div class="form-group">
+                    <label for="editPetAge">年龄</label>
+                    <input type="text" id="editPetAge" required>
+                </div>
+                <div class="form-group">
+                    <label for="editPetGender">性别</label>
+                    <select id="editPetGender" required>
+                        <option value="">请选择</option>
+                        <option value="male">男</option>
+                        <option value="female">女</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="editOwnerName">主人姓名</label>
+                    <input type="text" id="editOwnerName" required>
+                </div>
+                <div class="form-group">
+                    <label for="editOwnerPhone">联系电话</label>
+                    <input type="tel" id="editOwnerPhone" required>
+                </div>
+                <div class="form-actions">
+                    <button class="btn btn-secondary" onclick="closeEditPetModal()">取消</button>
+                    <button class="btn btn-primary" type="submit">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- 添加健康记录模态框 -->
+    <div id="addHealthRecordModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeAddHealthRecordModal()">&times;</span>
+            <h2>添加健康记录</h2>
+            <form onsubmit="handleAddHealthRecord(event)">
+                <input type="hidden" id="recordPetId">
+                <div class="form-group">
+                    <label for="recordType">记录类型</label>
+                    <select id="recordType" required>
+                        <option value="">请选择</option>
+                        <option value="vaccine">疫苗接种</option>
+                        <option value="checkup">健康体检</option>
+                        <option value="treatment">治疗记录</option>
+                        <option value="other">其他</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="recordDate">记录日期</label>
+                    <input type="date" id="recordDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="recordContent">记录内容</label>
+                    <textarea id="recordContent" rows="4" required></textarea>
+                </div>
+                <div class="form-actions">
+                    <button class="btn btn-secondary" onclick="closeAddHealthRecordModal()">取消</button>
+                    <button class="btn btn-primary" type="submit">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        // 退出登录
+        function logout() {
+            if (confirm('确定要退出登录吗？')) {
+                window.location.href = 'login.html';
+            }
+        }
+        
+        // 搜索宠物
+        function searchPets() {
+            // 模拟搜索功能
+            alert('搜索功能已执行');
+        }
+        
+        // 打开添加宠物模态框
+        function openAddPetModal() {
+            document.getElementById('addPetModal').style.display = 'block';
+        }
+        
+        // 关闭添加宠物模态框
+        function closeAddPetModal() {
+            document.getElementById('addPetModal').style.display = 'none';
+        }
+        
+        // 打开编辑宠物模态框
+        function openEditPetModal(petId) {
+            // 模拟填充数据
+            document.getElementById('editPetId').value = petId;
+            document.getElementById('editPetName').value = '小白';
+            document.getElementById('editPetType').value = '萨摩耶';
+            document.getElementById('editPetAge').value = '2岁';
+            document.getElementById('editPetGender').value = 'male';
+            document.getElementById('editOwnerName').value = '张三';
+            document.getElementById('editOwnerPhone').value = '13800138000';
+            document.getElementById('editPetModal').style.display = 'block';
+        }
+        
+        // 关闭编辑宠物模态框
+        function closeEditPetModal() {
+            document.getElementById('editPetModal').style.display = 'none';
+        }
+        
+        // 删除宠物
+        function deletePet(petId) {
+            if (confirm('确定要删除这个宠物档案吗？')) {
+                alert('宠物档案已删除');
+                // 这里可以添加更新UI的逻辑
+            }
+        }
+        
+        // 打开健康记录
+        function openHealthRecords(petId) {
+            // 模拟健康记录数据
+            const records = [
+                {
+                    type: '疫苗接种',
+                    date: '2026-02-15',
+                    content: '接种了狂犬疫苗'
+                },
+                {
+                    type: '健康体检',
+                    date: '2026-01-10',
+                    content: '常规体检，一切正常'
+                },
+                {
+                    type: '治疗记录',
+                    date: '2025-12-05',
+                    content: '感冒治疗，已康复'
+                }
+            ];
+            
+            const recordsList = document.getElementById('recordsList');
+            recordsList.innerHTML = '';
+            
+            records.forEach(record => {
+                const recordItem = document.createElement('div');
+                recordItem.className = 'record-item';
+                recordItem.innerHTML = `
+                    <div class="record-header">
+                        <span class="record-type">${record.type}</span>
+                        <span class="record-date">${record.date}</span>
+                    </div>
+                    <div class="record-content">${record.content}</div>
+                `;
+                recordsList.appendChild(recordItem);
+            });
+            
+            document.getElementById('recordPetId').value = petId;
+            document.getElementById('healthRecords').style.display = 'block';
+        }
+        
+        // 打开添加健康记录模态框
+        function openAddHealthRecordModal() {
+            document.getElementById('addHealthRecordModal').style.display = 'block';
+        }
+        
+        // 关闭添加健康记录模态框
+        function closeAddHealthRecordModal() {
+            document.getElementById('addHealthRecordModal').style.display = 'none';
+        }
+        
+        // 处理添加宠物
+        function handleAddPet(event) {
+            event.preventDefault();
+            // 模拟添加宠物
+            alert('宠物添加成功');
+            closeAddPetModal();
+        }
+        
+        // 处理编辑宠物
+        function handleEditPet(event) {
+            event.preventDefault();
+            // 模拟编辑宠物
+            alert('宠物信息更新成功');
+            closeEditPetModal();
+        }
+        
+        // 处理添加健康记录
+        function handleAddHealthRecord(event) {
+            event.preventDefault();
+            // 模拟添加健康记录
+            alert('健康记录添加成功');
+            closeAddHealthRecordModal();
+        }
+        
+        // 点击模态框外部关闭
+        window.onclick = function(event) {
+            const modals = document.getElementsByClassName('modal');
+            for (let i = 0; i < modals.length; i++) {
+                if (event.target == modals[i]) {
+                    modals[i].style.display = 'none';
+                }
+            }
+        }
+    </script>
+</body>
+</html>

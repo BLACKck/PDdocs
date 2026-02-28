@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>订单管理 - 爱宠宝宝管理系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* 侧边栏样式 */
+        .sidebar {
+            width: 220px;
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px 0;
+        }
+        
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 18px;
+        }
+        
+        .sidebar ul {
+            list-style: none;
+        }
+        
+        .sidebar ul li {
+            margin: 10px 0;
+        }
+        
+        .sidebar ul li a {
+            display: block;
+            padding: 12px 20px;
+            color: white;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+        
+        .sidebar ul li a:hover {
+            background-color: #34495e;
+        }
+        
+        .sidebar ul li a.active {
+            background-color: #3498db;
+        }
+        
+        /* 主内容区样式 */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            color: #2c3e50;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-info span {
+            margin-right: 15px;
+        }
+        
+        .user-info button {
+            padding: 6px 12px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        /* 搜索和筛选区域 */
+        .search-filter {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .search-box {
+            position: relative;
+        }
+        
+        .search-box input {
+            padding: 10px 15px;
+            width: 300px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .search-box button {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #999;
+        }
+        
+        .filter-box {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .filter-box select {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        /* 订单列表样式 */
+        .order-list {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .order-list table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .order-list th,
+        .order-list td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .order-list th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+        
+        .order-list tr:hover {
+            background-color: #f5f5f5;
+        }
+        
+        /* 状态标签样式 */
+        .status {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .status.pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        
+        .status.processing {
+            background-color: #cce7ff;
+            color: #004085;
+        }
+        
+        .status.completed {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .status.cancelled {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        /* 操作按钮样式 */
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+        
+        .btn-primary {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+        
+        .btn-secondary {
+            background-color: #95a5a6;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #7f8c8d;
+        }
+        
+        .btn-danger {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+        
+        /* 分页样式 */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .pagination button {
+            padding: 8px 12px;
+            margin: 0 5px;
+            border: 1px solid #ddd;
+            background-color: white;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        
+        .pagination button.active {
+            background-color: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+        
+        /* 模态框样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 8px;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .modal-header h2 {
+            font-size: 18px;
+        }
+        
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .close:hover {
+            color: black;
+        }
+        
+        /* 表单样式 */
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        /* 订单详情样式 */
+        .order-details {
+            margin-bottom: 20px;
+        }
+        
+        .order-details h3 {
+            margin-bottom: 15px;
+            font-size: 16px;
+            color: #2c3e50;
+        }
+        
+        .order-details p {
+            margin-bottom: 10px;
+        }
+        
+        .order-items {
+            margin-top: 20px;
+        }
+        
+        .order-items table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        
+        .order-items th,
+        .order-items td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        /* 提示信息样式 */
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                padding: 10px 0;
+            }
+            
+            .sidebar ul {
+                display: flex;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+            
+            .sidebar ul li {
+                margin: 0;
+            }
+            
+            .sidebar ul li a {
+                padding: 8px 15px;
+            }
+            
+            .search-filter {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .search-box input {
+                width: 100%;
+            }
+            
+            .filter-box {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .order-list table {
+                font-size: 14px;
+            }
+            
+            .order-list th,
+            .order-list td {
+                padding: 8px 10px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .action-buttons .btn {
+                font-size: 12px;
+                padding: 4px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 侧边栏 -->
+        <aside class="sidebar">
+            <h2>爱宠宝宝管理系统</h2>
+            <ul>
+                <li><a href="dashboard.html">仪表盘</a></li>
+                <li><a href="pet-management.html">宠物信息管理</a></li>
+                <li><a href="product-management.html">商品管理</a></li>
+                <li><a href="order-management.html" class="active">订单管理</a></li>
+                <li><a href="post-management.html">帖子管理</a></li>
+            </ul>
+        </aside>
+        
+        <!-- 主内容区 -->
+        <main class="main-content">
+            <div class="header">
+                <h1>订单管理</h1>
+                <div class="user-info">
+                    <span>管理员</span>
+                    <button onclick="logout()">退出登录</button>
+                </div>
+            </div>
+            
+            <!-- 搜索和筛选 -->
+            <div class="search-filter">
+                <div class="search-box">
+                    <input type="text" placeholder="搜索订单号、客户名称...">
+                    <button onclick="searchOrders()">🔍</button>
+                </div>
+                <div class="filter-box">
+                    <select id="status-filter" onchange="filterOrders()">
+                        <option value="all">全部状态</option>
+                        <option value="pending">待处理</option>
+                        <option value="processing">处理中</option>
+                        <option value="completed">已完成</option>
+                        <option value="cancelled">已取消</option>
+                    </select>
+                    <select id="date-filter" onchange="filterOrders()">
+                        <option value="all">全部时间</option>
+                        <option value="today">今天</option>
+                        <option value="week">本周</option>
+                        <option value="month">本月</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- 提示信息 -->
+            <div id="alert" class="alert" style="display: none;"></div>
+            
+            <!-- 订单列表 -->
+            <div class="order-list">
+                <table id="order-table">
+                    <thead>
+                        <tr>
+                            <th>订单号</th>
+                            <th>客户名称</th>
+                            <th>宠物名称</th>
+                            <th>订单类型</th>
+                            <th>订单金额</th>
+                            <th>下单时间</th>
+                            <th>订单状态</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- 订单数据将通过JavaScript动态生成 -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- 分页 -->
+            <div class="pagination">
+                <button onclick="changePage(1)">上一页</button>
+                <button class="active" onclick="changePage(1)">1</button>
+                <button onclick="changePage(2)">2</button>
+                <button onclick="changePage(3)">3</button>
+                <button onclick="changePage(2)">下一页</button>
+            </div>
+        </main>
+    </div>
+    
+    <!-- 订单详情模态框 -->
+    <div id="order-detail-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>订单详情</h2>
+                <span class="close" onclick="closeModal('order-detail-modal')">&times;</span>
+            </div>
+            <div id="order-detail-content">
+                <!-- 订单详情将通过JavaScript动态生成 -->
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-secondary" onclick="closeModal('order-detail-modal')">关闭</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 订单状态更新模态框 -->
+    <div id="update-status-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>更新订单状态</h2>
+                <span class="close" onclick="closeModal('update-status-modal')">&times;</span>
+            </div>
+            <form id="status-form">
+                <input type="hidden" id="order-id">
+                <div class="form-group">
+                    <label for="new-status">新状态</label>
+                    <select id="new-status" required>
+                        <option value="pending">待处理</option>
+                        <option value="processing">处理中</option>
+                        <option value="completed">已完成</option>
+                        <option value="cancelled">已取消</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="status-note">备注</label>
+                    <textarea id="status-note" placeholder="添加备注信息..."></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('update-status-modal')">取消</button>
+                    <button type="submit" class="btn btn-primary">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        // 模拟订单数据
+        const orders = [
+            { id: 'ORD001', customer: '张三', pet: '旺财', type: '商品购买', amount: 299.00, date: '2026-03-01 10:30', status: 'pending' },
+            { id: 'ORD002', customer: '李四', pet: '咪咪', type: '预约服务', amount: 150.00, date: '2026-03-01 09:15', status: 'processing' },
+            { id: 'ORD003', customer: '王五', pet: '小黑', type: '商品购买', amount: 450.00, date: '2026-02-29 14:20', status: 'completed' },
+            { id: 'ORD004', customer: '赵六', pet: '小白', type: '预约服务', amount: 200.00, date: '2026-02-29 11:45', status: 'cancelled' },
+            { id: 'ORD005', customer: '孙七', pet: '花花', type: '商品购买', amount: 180.00, date: '2026-02-28 16:50', status: 'completed' },
+            { id: 'ORD006', customer: '周八', pet: '豆豆', type: '预约服务', amount: 120.00, date: '2026-02-28 10:10', status: 'processing' },
+            { id: 'ORD007', customer: '吴九', pet: '球球', type: '商品购买', amount: 320.00, date: '2026-02-27 15:30', status: 'pending' },
+            { id: 'ORD008', customer: '郑十', pet: '贝贝', type: '预约服务', amount: 180.00, date: '2026-02-27 09:45', status: 'completed' }
+        ];
+        
+        // 订单详情数据
+        const orderDetails = {
+            'ORD001': {
+                customer: '张三',
+                phone: '13800138000',
+                pet: '旺财',
+                petType: '狗',
+                petBreed: '金毛',
+                items: [
+                    { name: '宠物粮', quantity: 2, price: 129.50 },
+                    { name: '宠物玩具', quantity: 1, price: 40.00 }
+                ],
+                total: 299.00,
+                paymentMethod: '微信支付',
+                status: 'pending',
+                notes: '无特殊要求'
+            },
+            'ORD002': {
+                customer: '李四',
+                phone: '13900139000',
+                pet: '咪咪',
+                petType: '猫',
+                petBreed: '英短',
+                items: [
+                    { name: '疫苗接种', quantity: 1, price: 150.00 }
+                ],
+                total: 150.00,
+                paymentMethod: '支付宝',
+                status: 'processing',
+                notes: '请安排在下午进行'
+            }
+        };
+        
+        // 页面加载时渲染订单列表
+        document.addEventListener('DOMContentLoaded', function() {
+            renderOrders();
+        });
+        
+        // 渲染订单列表
+        function renderOrders() {
+            const tbody = document.querySelector('#order-table tbody');
+            tbody.innerHTML = '';
+            
+            orders.forEach(order => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${order.id}</td>
+                    <td>${order.customer}</td>
+                    <td>${order.pet}</td>
+                    <td>${order.type}</td>
+                    <td>¥${order.amount.toFixed(2)}</td>
+                    <td>${order.date}</td>
+                    <td><span class="status ${order.status}">${getStatusText(order.status)}</span></td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-primary" onclick="viewOrderDetail('${order.id}')">详情</button>
+                            <button class="btn btn-secondary" onclick="updateOrderStatus('${order.id}')">更新状态</button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+        
+        // 获取状态文本
+        function getStatusText(status) {
+            const statusMap = {
+                pending: '待处理',
+                processing: '处理中',
+                completed: '已完成',
+                cancelled: '已取消'
+            };
+            return statusMap[status] || status;
+        }
+        
+        // 查看订单详情
+        function viewOrderDetail(orderId) {
+            const detail = orderDetails[orderId] || {
+                customer: '未知',
+                phone: '未知',
+                pet: '未知',
+                petType: '未知',
+                petBreed: '未知',
+                items: [],
+                total: 0,
+                paymentMethod: '未知',
+                status: '未知',
+                notes: '无'
+            };
+            
+            const content = document.getElementById('order-detail-content');
+            content.innerHTML = `
+                <div class="order-details">
+                    <h3>基本信息</h3>
+                    <p><strong>订单号:</strong> ${orderId}</p>
+                    <p><strong>客户名称:</strong> ${detail.customer}</p>
+                    <p><strong>联系电话:</strong> ${detail.phone}</p>
+                    <p><strong>宠物名称:</strong> ${detail.pet}</p>
+                    <p><strong>宠物类型:</strong> ${detail.petType}</p>
+                    <p><strong>宠物品种:</strong> ${detail.petBreed}</p>
+                    <p><strong>支付方式:</strong> ${detail.paymentMethod}</p>
+                    <p><strong>订单状态:</strong> <span class="status ${orders.find(o => o.id === orderId).status}">${getStatusText(orders.find(o => o.id === orderId).status)}</span></p>
+                    <p><strong>备注:</strong> ${detail.notes}</p>
+                </div>
+                <div class="order-items">
+                    <h3>订单商品</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>商品名称</th>
+                                <th>数量</th>
+                                <th>单价</th>
+                                <th>小计</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${detail.items.map(item => `
+                                <tr>
+                                    <td>${item.name}</td>
+                                    <td>${item.quantity}</td>
+                                    <td>¥${item.price.toFixed(2)}</td>
+                                    <td>¥${(item.quantity * item.price).toFixed(2)}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="3" style="text-align: right;"><strong>总计:</strong></td>
+                                <td><strong>¥${detail.total.toFixed(2)}</strong></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            `;
+            
+            document.getElementById('order-detail-modal').style.display = 'block';
+        }
+        
+        // 更新订单状态
+        function updateOrderStatus(orderId) {
+            document.getElementById('order-id').value = orderId;
+            const order = orders.find(o => o.id === orderId);
+            document.getElementById('new-status').value = order.status;
+            document.getElementById('update-status-modal').style.display = 'block';
+        }
+        
+        // 关闭模态框
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+        
+        // 搜索订单
+        function searchOrders() {
+            const searchTerm = document.querySelector('.search-box input').value.toLowerCase();
+            const tbody = document.querySelector('#order-table tbody');
+            tbody.innerHTML = '';
+            
+            const filteredOrders = orders.filter(order => 
+                order.id.toLowerCase().includes(searchTerm) ||
+                order.customer.toLowerCase().includes(searchTerm) ||
+                order.pet.toLowerCase().includes(searchTerm)
+            );
+            
+            filteredOrders.forEach(order => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${order.id}</td>
+                    <td>${order.customer}</td>
+                    <td>${order.pet}</td>
+                    <td>${order.type}</td>
+                    <td>¥${order.amount.toFixed(2)}</td>
+                    <td>${order.date}</td>
+                    <td><span class="status ${order.status}">${getStatusText(order.status)}</span></td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-primary" onclick="viewOrderDetail('${order.id}')">详情</button>
+                            <button class="btn btn-secondary" onclick="updateOrderStatus('${order.id}')">更新状态</button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+        
+        // 筛选订单
+        function filterOrders() {
+            const statusFilter = document.getElementById('status-filter').value;
+            const dateFilter = document.getElementById('date-filter').value;
+            const tbody = document.querySelector('#order-table tbody');
+            tbody.innerHTML = '';
+            
+            let filteredOrders = orders;
+            
+            if (statusFilter !== 'all') {
+                filteredOrders = filteredOrders.filter(order => order.status === statusFilter);
+            }
+            
+            // 这里简化处理，实际项目中需要根据日期筛选
+            
+            filteredOrders.forEach(order => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${order.id}</td>
+                    <td>${order.customer}</td>
+                    <td>${order.pet}</td>
+                    <td>${order.type}</td>
+                    <td>¥${order.amount.toFixed(2)}</td>
+                    <td>${order.date}</td>
+                    <td><span class="status ${order.status}">${getStatusText(order.status)}</span></td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-primary" onclick="viewOrderDetail('${order.id}')">详情</button>
+                            <button class="btn btn-secondary" onclick="updateOrderStatus('${order.id}')">更新状态</button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+        
+        // 更改页码
+        function changePage(page) {
+            // 这里简化处理，实际项目中需要根据页码加载对应数据
+            const buttons = document.querySelectorAll('.pagination button');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            buttons[page].classList.add('active');
+        }
+        
+        // 提交状态更新表单
+        document.getElementById('status-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const orderId = document.getElementById('order-id').value;
+            const newStatus = document.getElementById('new-status').value;
+            const note = document.getElementById('status-note').value;
+            
+            // 更新订单状态
+            const order = orders.find(o => o.id === orderId);
+            if (order) {
+                order.status = newStatus;
+                renderOrders();
+                showAlert('订单状态更新成功！', 'success');
+                closeModal('update-status-modal');
+            } else {
+                showAlert('订单状态更新失败！', 'error');
+            }
+        });
+        
+        // 显示提示信息
+        function showAlert(message, type) {
+            const alert = document.getElementById('alert');
+            alert.textContent = message;
+            alert.className = `alert alert-${type}`;
+            alert.style.display = 'block';
+            
+            // 3秒后隐藏提示
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 3000);
+        }
+        
+        // 退出登录
+        function logout() {
+            window.location.href = 'login.html';
+        }
+        
+        // 点击模态框外部关闭
+        window.onclick = function(event) {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                if (event.target == modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>

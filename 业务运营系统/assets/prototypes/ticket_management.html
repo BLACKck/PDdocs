@@ -453,9 +453,13 @@
                                     <td>2026-03-01 10:00</td>
                                     <td>张三</td>
                                     <td>
-                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;">编辑</button>
-                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;">详情</button>
-                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;">关闭</button>
+                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;" onclick="openModal('editModal')">编辑</button>
+                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;" onclick="openModal('detailModal')">详情</button>
+                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;" onclick="deleteTicket('TK001')">删除</button>
+                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;" onclick="assignTicket('TK001')">分配</button>
+                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;" onclick="processTicket('TK001')">处理</button>
+                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;" onclick="resolveTicket('TK001')">解决</button>
+                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;" onclick="closeTicket('TK001')">关闭</button>
                                     </td>
                                 </tr>
                                 <tr>
@@ -467,9 +471,13 @@
                                     <td>2026-03-01 11:30</td>
                                     <td>李四</td>
                                     <td>
-                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;">编辑</button>
-                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;">详情</button>
-                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;">关闭</button>
+                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;" onclick="openModal('editModal')">编辑</button>
+                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;" onclick="openModal('detailModal')">详情</button>
+                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;" onclick="deleteTicket('TK001')">删除</button>
+                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;" onclick="assignTicket('TK001')">分配</button>
+                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;" onclick="processTicket('TK001')">处理</button>
+                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;" onclick="resolveTicket('TK001')">解决</button>
+                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;" onclick="closeTicket('TK001')">关闭</button>
                                     </td>
                                 </tr>
                                 <tr>
@@ -481,9 +489,13 @@
                                     <td>2026-03-01 14:00</td>
                                     <td>王五</td>
                                     <td>
-                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;">编辑</button>
-                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;">详情</button>
-                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;">关闭</button>
+                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;" onclick="openModal('editModal')">编辑</button>
+                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;" onclick="openModal('detailModal')">详情</button>
+                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;" onclick="deleteTicket('TK001')">删除</button>
+                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;" onclick="assignTicket('TK001')">分配</button>
+                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;" onclick="processTicket('TK001')">处理</button>
+                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;" onclick="resolveTicket('TK001')">解决</button>
+                                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;" onclick="closeTicket('TK001')">关闭</button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -545,9 +557,108 @@
                 </div>
                 <div class="form-actions">
                     <button type="button" class="btn btn-secondary" onclick="closeModal('addModal')">取消</button>
-                    <button type="submit" class="btn btn-primary">保存</button>
+                    <button type="submit" class="btn btn-primary" onclick="saveTicket()">保存</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- 编辑工单模态框 -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>编辑工单</h2>
+                <span class="close" onclick="closeModal('editModal')">&times;</span>
+            </div>
+            <form>
+                <div class="form-group">
+                    <label>客户</label>
+                    <select required>
+                        <option value="001" selected>科技有限公司</option>
+                        <option value="002">金融服务公司</option>
+                        <option value="003">制造企业</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>标题</label>
+                    <input type="text" value="系统登录问题" required>
+                </div>
+                <div class="form-group">
+                    <label>优先级</label>
+                    <select required>
+                        <option value="high" selected>高</option>
+                        <option value="medium">中</option>
+                        <option value="low">低</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>描述</label>
+                    <textarea required>用户无法登录系统，提示密码错误</textarea>
+                </div>
+                <div class="form-group">
+                    <label>负责人</label>
+                    <select required>
+                        <option value="zhangsan" selected>张三</option>
+                        <option value="lisi">李四</option>
+                        <option value="wangwu">王五</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>状态</label>
+                    <select required>
+                        <option value="pending">待处理</option>
+                        <option value="processing" selected>处理中</option>
+                        <option value="resolved">已解决</option>
+                        <option value="closed">已关闭</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('editModal')">取消</button>
+                    <button type="submit" class="btn btn-primary" onclick="updateTicket()">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 工单详情模态框 -->
+    <div id="detailModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>工单详情</h2>
+                <span class="close" onclick="closeModal('detailModal')">&times;</span>
+            </div>
+            <div style="padding: 20px;">
+                <div style="margin-bottom: 15px;">
+                    <strong>工单ID:</strong> TK001
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <strong>客户:</strong> 科技有限公司
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <strong>标题:</strong> 系统登录问题
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <strong>优先级:</strong> 高
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <strong>状态:</strong> 处理中
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <strong>描述:</strong> 用户无法登录系统，提示密码错误
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <strong>负责人:</strong> 张三
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <strong>创建时间:</strong> 2026-03-01 10:00:00
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <strong>更新时间:</strong> 2026-03-01 10:30:00
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('detailModal')">关闭</button>
+            </div>
         </div>
     </div>
 
@@ -568,6 +679,48 @@
                     modals[i].style.display = 'none';
                 }
             }
+        }
+
+        // 保存工单
+        function saveTicket() {
+            alert('工单创建成功');
+            closeModal('addModal');
+        }
+
+        // 更新工单
+        function updateTicket() {
+            alert('工单更新成功');
+            closeModal('editModal');
+        }
+
+        // 删除工单
+        function deleteTicket(ticketId) {
+            if (confirm('确定要删除该工单吗？')) {
+                alert('工单删除成功');
+            }
+        }
+
+        // 分配工单
+        function assignTicket(ticketId) {
+            var assignee = prompt('请选择负责人:', '张三');
+            if (assignee) {
+                alert('工单分配成功');
+            }
+        }
+
+        // 处理工单
+        function processTicket(ticketId) {
+            alert('工单状态已更新为处理中');
+        }
+
+        // 解决工单
+        function resolveTicket(ticketId) {
+            alert('工单已解决');
+        }
+
+        // 关闭工单
+        function closeTicket(ticketId) {
+            alert('工单已关闭');
         }
     </script>
 </body>
