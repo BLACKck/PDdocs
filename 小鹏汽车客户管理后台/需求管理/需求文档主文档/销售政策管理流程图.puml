@@ -1,0 +1,19 @@
+@startuml 销售政策管理流程图
+
+start
+
+:政策创建;
+:政策发布;
+:政策执行;
+:政策分析;
+
+if (政策过期?)
+  then (是)
+    :政策归档;
+  else (否)
+    back to :政策执行;
+  endif
+
+stop
+
+@enduml

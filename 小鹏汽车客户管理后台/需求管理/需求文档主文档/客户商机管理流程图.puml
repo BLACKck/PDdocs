@@ -1,0 +1,26 @@
+@startuml 客户商机管理流程图
+
+start
+
+:商机创建;
+:商机评估;
+:商机跟进;
+
+if (商机转化?)
+  then (是)
+    :转化为订单;
+    :商机归档;
+  else (否)
+    if (商机失败?)
+      then (是)
+        :标记为失败;
+        :商机归档;
+      else (否)
+        :继续跟进;
+        back to :商机跟进;
+      endif
+  endif
+
+stop
+
+@enduml

@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>订单配车 - 小鹏汽车客户管理后台</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* 侧边导航栏 */
+        .sidebar {
+            width: 250px;
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px 0;
+        }
+
+        .sidebar .logo {
+            padding: 0 20px 20px;
+            font-size: 18px;
+            font-weight: bold;
+            border-bottom: 1px solid #34495e;
+        }
+
+        .sidebar ul {
+            list-style: none;
+        }
+
+        .sidebar ul li {
+            padding: 12px 20px;
+        }
+
+        .sidebar ul li a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar ul li:hover {
+            background-color: #34495e;
+        }
+
+        .sidebar ul li.active {
+            background-color: #3498db;
+        }
+
+        /* 主内容区域 */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 顶部导航栏 */
+        .top-nav {
+            background-color: white;
+            padding: 15px 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .top-nav .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .top-nav .user-info img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        /* 内容区域 */
+        .content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .content-header {
+            margin-bottom: 20px;
+        }
+
+        .content-header h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .content-header p {
+            color: #666;
+        }
+
+        /* 搜索过滤器 */
+        .search-filter {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .filter-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .filter-item {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-item label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .filter-item input,
+        .filter-item select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .filter-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+
+        .btn-secondary {
+            background-color: #95a5a6;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #7f8c8d;
+        }
+
+        /* 配车区域 */
+        .allocation-section {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .order-list {
+            flex: 1;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .vehicle-list {
+            flex: 1;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: 15px 20px;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #e0e0e0;
+            font-weight: 600;
+        }
+
+        /* 数据表格 */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        .status {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-pending {
+            background-color: #fff3e0;
+            color: #f57c00;
+        }
+
+        .status-approved {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .status-allocated {
+            background-color: #e8f5e8;
+            color: #2e7d32;
+        }
+
+        .status-delivered {
+            background-color: #f3e5f5;
+            color: #7b1fa2;
+        }
+
+        .status-canceled {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+
+        .vehicle-status {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .vehicle-status-in-stock {
+            background-color: #e8f5e8;
+            color: #2e7d32;
+        }
+
+        .vehicle-status-allocated {
+            background-color: #fff3e0;
+            color: #f57c00;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+        }
+
+        .btn-sm {
+            padding: 4px 8px;
+            font-size: 12px;
+        }
+
+        .btn-view {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .btn-view:hover {
+            background-color: #2980b9;
+        }
+
+        .btn-allocate {
+            background-color: #27ae60;
+            color: white;
+        }
+
+        .btn-allocate:hover {
+            background-color: #229954;
+        }
+
+        /* 分页 */
+        .pagination {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 15px;
+            background-color: white;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .pagination button {
+            margin: 0 5px;
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            background-color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .pagination button.active {
+            background-color: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+
+        /* 模态框 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 600px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .modal-header h2 {
+            font-size: 18px;
+        }
+
+        .close {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                padding: 10px 0;
+            }
+
+            .sidebar ul {
+                display: flex;
+                overflow-x: auto;
+            }
+
+            .sidebar ul li {
+                white-space: nowrap;
+                border-right: 1px solid #34495e;
+            }
+
+            .allocation-section {
+                flex-direction: column;
+            }
+
+            .filter-row {
+                flex-direction: column;
+            }
+
+            .filter-item {
+                width: 100%;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 20% auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 侧边导航栏 -->
+        <div class="sidebar">
+            <div class="logo">小鹏汽车客户管理后台</div>
+            <ul>
+                <li><a href="首页.html">首页</a></li>
+                <li><a href="客户线索管理页面.html">客户线索管理</a></li>
+                <li><a href="客户商机管理页面.html">客户商机管理</a></li>
+                <li><a href="客户订单管理页面.html">客户订单管理</a></li>
+                <li><a href="待售车辆管理页面.html">待售车辆管理</a></li>
+                <li><a href="销售政策管理页面.html">销售政策管理</a></li>
+                <li><a href="门店线索及订单查看页面.html">门店线索及订单查看</a></li>
+                <li><a href="门店管理页面.html">门店管理</a></li>
+                <li class="active"><a href="订单配车页面.html">订单配车</a></li>
+                <li><a href="门店信息管理页面.html">门店信息管理</a></li>
+            </ul>
+        </div>
+
+        <!-- 主内容区域 -->
+        <div class="main-content">
+            <!-- 顶部导航栏 -->
+            <div class="top-nav">
+                <div class="breadcrumb">首页 > 订单配车</div>
+                <div class="user-info">
+                    <img src="https://via.placeholder.com/32" alt="用户头像">
+                    <span>系统管理员</span>
+                </div>
+            </div>
+
+            <!-- 内容区域 -->
+            <div class="content">
+                <div class="content-header">
+                    <h1>订单配车</h1>
+                    <p>为订单分配可用车辆</p>
+                </div>
+
+                <!-- 搜索过滤器 -->
+                <div class="search-filter">
+                    <h3>订单搜索</h3>
+                    <div class="filter-row">
+                        <div class="filter-item">
+                            <label for="order-id">订单ID</label>
+                            <input type="text" id="order-id" placeholder="请输入订单ID">
+                        </div>
+                        <div class="filter-item">
+                            <label for="customer-name">客户姓名</label>
+                            <input type="text" id="customer-name" placeholder="请输入客户姓名">
+                        </div>
+                        <div class="filter-item">
+                            <label for="vehicle-model">车型</label>
+                            <select id="vehicle-model">
+                                <option value="">全部</option>
+                                <option value="p7">小鹏P7</option>
+                                <option value="p5">小鹏P5</option>
+                                <option value="g3">小鹏G3</option>
+                                <option value="g9">小鹏G9</option>
+                            </select>
+                        </div>
+                        <div class="filter-item">
+                            <label for="order-status">订单状态</label>
+                            <select id="order-status">
+                                <option value="">全部</option>
+                                <option value="pending">待审批</option>
+                                <option value="approved">已审批</option>
+                                <option value="allocated">已配车</option>
+                                <option value="delivered">已交付</option>
+                                <option value="canceled">已取消</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="filter-actions">
+                        <button class="btn btn-primary">搜索</button>
+                        <button class="btn btn-secondary">重置</button>
+                    </div>
+                </div>
+
+                <!-- 配车区域 -->
+                <div class="allocation-section">
+                    <!-- 订单列表 -->
+                    <div class="order-list">
+                        <div class="section-header">待配车订单</div>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>订单ID</th>
+                                    <th>客户姓名</th>
+                                    <th>车型</th>
+                                    <th>颜色</th>
+                                    <th>订单金额</th>
+                                    <th>状态</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>OD001</td>
+                                    <td>张三</td>
+                                    <td>小鹏P7</td>
+                                    <td>星慕白</td>
+                                    <td>259,900</td>
+                                    <td><span class="status status-approved">已审批</span></td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="btn btn-sm btn-view" onclick="openModal('view-order-modal')">查看</button>
+                                            <button class="btn btn-sm btn-allocate" onclick="openModal('allocate-vehicle-modal')">配车</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>OD002</td>
+                                    <td>李四</td>
+                                    <td>小鹏G9</td>
+                                    <td>深空黑</td>
+                                    <td>399,900</td>
+                                    <td><span class="status status-approved">已审批</span></td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="btn btn-sm btn-view" onclick="openModal('view-order-modal')">查看</button>
+                                            <button class="btn btn-sm btn-allocate" onclick="openModal('allocate-vehicle-modal')">配车</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>OD003</td>
+                                    <td>王五</td>
+                                    <td>小鹏P5</td>
+                                    <td>天青绿</td>
+                                    <td>189,900</td>
+                                    <td><span class="status status-approved">已审批</span></td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="btn btn-sm btn-view" onclick="openModal('view-order-modal')">查看</button>
+                                            <button class="btn btn-sm btn-allocate" onclick="openModal('allocate-vehicle-modal')">配车</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="pagination">
+                            <button>上一页</button>
+                            <button class="active">1</button>
+                            <button>2</button>
+                            <button>3</button>
+                            <button>下一页</button>
+                        </div>
+                    </div>
+
+                    <!-- 车辆列表 -->
+                    <div class="vehicle-list">
+                        <div class="section-header">可用车辆</div>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>车辆ID</th>
+                                    <th>车型</th>
+                                    <th>配置</th>
+                                    <th>颜色</th>
+                                    <th>vin码</th>
+                                    <th>状态</th>
+                                    <th>库存位置</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>V001</td>
+                                    <td>小鹏P7</td>
+                                    <td>610N+版本</td>
+                                    <td>星慕白</td>
+                                    <td>LSV123456789012345</td>
+                                    <td><span class="vehicle-status vehicle-status-in-stock">在库</span></td>
+                                    <td>北京仓库</td>
+                                </tr>
+                                <tr>
+                                    <td>V002</td>
+                                    <td>小鹏G9</td>
+                                    <td>702Max版本</td>
+                                    <td>深空黑</td>
+                                    <td>LSV678901234567890</td>
+                                    <td><span class="vehicle-status vehicle-status-in-stock">在库</span></td>
+                                    <td>上海仓库</td>
+                                </tr>
+                                <tr>
+                                    <td>V003</td>
+                                    <td>小鹏P5</td>
+                                    <td>510Pro版本</td>
+                                    <td>天青绿</td>
+                                    <td>LSV987654321098765</td>
+                                    <td><span class="vehicle-status vehicle-status-in-stock">在库</span></td>
+                                    <td>广州仓库</td>
+                                </tr>
+                                <tr>
+                                    <td>V004</td>
+                                    <td>小鹏P7</td>
+                                    <td>586E版本</td>
+                                    <td>星慕白</td>
+                                    <td>LSV543210987654321</td>
+                                    <td><span class="vehicle-status vehicle-status-in-stock">在库</span></td>
+                                    <td>北京仓库</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="pagination">
+                            <button>上一页</button>
+                            <button class="active">1</button>
+                            <button>2</button>
+                            <button>3</button>
+                            <button>下一页</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 查看订单模态框 -->
+    <div id="view-order-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>查看订单详情</h2>
+                <span class="close" onclick="closeModal('view-order-modal')">&times;</span>
+            </div>
+            <div class="form-group">
+                <label>订单ID</label>
+                <input type="text" value="OD001" disabled>
+            </div>
+            <div class="form-group">
+                <label>客户姓名</label>
+                <input type="text" value="张三" disabled>
+            </div>
+            <div class="form-group">
+                <label>联系电话</label>
+                <input type="text" value="13800138001" disabled>
+            </div>
+            <div class="form-group">
+                <label>车型</label>
+                <input type="text" value="小鹏P7" disabled>
+            </div>
+            <div class="form-group">
+                <label>配置</label>
+                <input type="text" value="610N+版本" disabled>
+            </div>
+            <div class="form-group">
+                <label>颜色</label>
+                <input type="text" value="星慕白" disabled>
+            </div>
+            <div class="form-group">
+                <label>订单金额</label>
+                <input type="text" value="259,900" disabled>
+            </div>
+            <div class="form-group">
+                <label>创建时间</label>
+                <input type="text" value="2024-01-05 14:30:00" disabled>
+            </div>
+            <div class="form-group">
+                <label>状态</label>
+                <input type="text" value="已审批" disabled>
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-secondary" onclick="closeModal('view-order-modal')">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 配车模态框 -->
+    <div id="allocate-vehicle-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>配车</h2>
+                <span class="close" onclick="closeModal('allocate-vehicle-modal')">&times;</span>
+            </div>
+            <div class="form-group">
+                <label>订单ID</label>
+                <input type="text" value="OD001" disabled>
+            </div>
+            <div class="form-group">
+                <label>客户姓名</label>
+                <input type="text" value="张三" disabled>
+            </div>
+            <div class="form-group">
+                <label>车型</label>
+                <input type="text" value="小鹏P7" disabled>
+            </div>
+            <div class="form-group">
+                <label>颜色</label>
+                <input type="text" value="星慕白" disabled>
+            </div>
+            <div class="form-group">
+                <label>选择车辆</label>
+                <select>
+                    <option value="V001">V001 - 小鹏P7 - 星慕白 - 北京仓库</option>
+                    <option value="V004">V004 - 小鹏P7 - 星慕白 - 北京仓库</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>配车备注</label>
+                <textarea placeholder="请输入配车备注"></textarea>
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-secondary" onclick="closeModal('allocate-vehicle-modal')">取消</button>
+                <button class="btn btn-primary" onclick="closeModal('allocate-vehicle-modal'); showMessage('配车成功')">确认配车</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 打开模态框
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'block';
+        }
+
+        // 关闭模态框
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // 点击模态框外部关闭
+        window.onclick = function(event) {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                if (event.target == modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        }
+
+        // 显示消息
+        function showMessage(message) {
+            alert(message);
+        }
+    </script>
+</body>
+</html>

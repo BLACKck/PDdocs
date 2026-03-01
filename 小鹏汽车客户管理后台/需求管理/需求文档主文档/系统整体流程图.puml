@@ -1,0 +1,67 @@
+@startuml 系统整体流程图
+
+!define RECTANGLE class
+!define DIAMOND note
+!define START stop
+!define END start
+!define ARROW -->
+
+skinparam backgroundColor white
+skinparam componentStyle rectangle
+
+actor "总部管理员" as HQAdmin
+actor "总部销售经理" as HQSalesManager
+actor "总部运营经理" as HQOperationManager
+actor "门店经理" as StoreManager
+actor "门店销售人员" as StoreSales
+
+package "总部管理" {
+    [客户线索管理] as LeadManagement
+    [客户商机管理] as OpportunityManagement
+    [客户订单管理] as OrderManagement
+    [待售车辆管理] as VehicleManagement
+    [销售政策管理] as PolicyManagement
+    [门店管理] as StoreManagement
+    [订单配车] as VehicleAllocation
+}
+
+package "门店管理" {
+    [门店线索及订单查看] as StoreLeadOrderView
+    [门店信息管理] as StoreInfoManagement
+}
+
+HQAdmin --> LeadManagement
+HQAdmin --> OpportunityManagement
+HQAdmin --> OrderManagement
+HQAdmin --> VehicleManagement
+HQAdmin --> PolicyManagement
+HQAdmin --> StoreManagement
+HQAdmin --> VehicleAllocation
+
+HQSalesManager --> LeadManagement
+HQSalesManager --> OpportunityManagement
+HQSalesManager --> OrderManagement
+HQSalesManager --> PolicyManagement
+
+HQOperationManager --> VehicleManagement
+HQOperationManager --> StoreManagement
+HQOperationManager --> VehicleAllocation
+
+StoreManager --> StoreLeadOrderView
+StoreManager --> StoreInfoManagement
+
+StoreSales --> StoreLeadOrderView
+
+LeadManagement --> OpportunityManagement
+OpportunityManagement --> OrderManagement
+OrderManagement --> VehicleAllocation
+VehicleAllocation --> VehicleManagement
+PolicyManagement --> LeadManagement
+PolicyManagement --> OpportunityManagement
+PolicyManagement --> OrderManagement
+StoreManagement --> StoreLeadOrderView
+StoreManagement --> StoreInfoManagement
+StoreLeadOrderView --> LeadManagement
+StoreLeadOrderView --> OrderManagement
+
+@enduml

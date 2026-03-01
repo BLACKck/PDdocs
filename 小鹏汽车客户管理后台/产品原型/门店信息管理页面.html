@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>门店信息管理 - 小鹏汽车客户管理后台</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* 侧边导航栏 */
+        .sidebar {
+            width: 250px;
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px 0;
+        }
+
+        .sidebar .logo {
+            padding: 0 20px 20px;
+            font-size: 18px;
+            font-weight: bold;
+            border-bottom: 1px solid #34495e;
+        }
+
+        .sidebar ul {
+            list-style: none;
+        }
+
+        .sidebar ul li {
+            padding: 12px 20px;
+        }
+
+        .sidebar ul li a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar ul li:hover {
+            background-color: #34495e;
+        }
+
+        .sidebar ul li.active {
+            background-color: #3498db;
+        }
+
+        /* 主内容区域 */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 顶部导航栏 */
+        .top-nav {
+            background-color: white;
+            padding: 15px 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .top-nav .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .top-nav .user-info img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        /* 内容区域 */
+        .content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .content-header {
+            margin-bottom: 20px;
+        }
+
+        .content-header h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .content-header p {
+            color: #666;
+        }
+
+        /* 操作按钮 */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+
+        .btn-secondary {
+            background-color: #95a5a6;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #7f8c8d;
+        }
+
+        /* 搜索过滤器 */
+        .search-filter {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .filter-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .filter-item {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-item label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .filter-item input,
+        .filter-item select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .filter-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        /* 数据表格 */
+        .data-table {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        .status {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background-color: #e8f5e8;
+            color: #2e7d32;
+        }
+
+        .status-inactive {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+        }
+
+        .btn-sm {
+            padding: 4px 8px;
+            font-size: 12px;
+        }
+
+        .btn-view {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .btn-view:hover {
+            background-color: #2980b9;
+        }
+
+        .btn-edit {
+            background-color: #f39c12;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background-color: #e67e22;
+        }
+
+        .btn-delete {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background-color: #c0392b;
+        }
+
+        /* 分页 */
+        .pagination {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 15px;
+            background-color: white;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .pagination button {
+            margin: 0 5px;
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            background-color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .pagination button.active {
+            background-color: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+
+        /* 模态框 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 600px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .modal-header h2 {
+            font-size: 18px;
+        }
+
+        .close {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                padding: 10px 0;
+            }
+
+            .sidebar ul {
+                display: flex;
+                overflow-x: auto;
+            }
+
+            .sidebar ul li {
+                white-space: nowrap;
+                border-right: 1px solid #34495e;
+            }
+
+            .filter-row {
+                flex-direction: column;
+            }
+
+            .filter-item {
+                width: 100%;
+            }
+
+            .action-buttons {
+                flex-wrap: wrap;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 20% auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 侧边导航栏 -->
+        <div class="sidebar">
+            <div class="logo">小鹏汽车客户管理后台</div>
+            <ul>
+                <li><a href="首页.html">首页</a></li>
+                <li><a href="客户线索管理页面.html">客户线索管理</a></li>
+                <li><a href="客户商机管理页面.html">客户商机管理</a></li>
+                <li><a href="客户订单管理页面.html">客户订单管理</a></li>
+                <li><a href="待售车辆管理页面.html">待售车辆管理</a></li>
+                <li><a href="销售政策管理页面.html">销售政策管理</a></li>
+                <li><a href="门店线索及订单查看页面.html">门店线索及订单查看</a></li>
+                <li><a href="门店管理页面.html">门店管理</a></li>
+                <li><a href="订单配车页面.html">订单配车</a></li>
+                <li class="active"><a href="门店信息管理页面.html">门店信息管理</a></li>
+            </ul>
+        </div>
+
+        <!-- 主内容区域 -->
+        <div class="main-content">
+            <!-- 顶部导航栏 -->
+            <div class="top-nav">
+                <div class="breadcrumb">首页 > 门店信息管理</div>
+                <div class="user-info">
+                    <img src="https://via.placeholder.com/32" alt="用户头像">
+                    <span>系统管理员</span>
+                </div>
+            </div>
+
+            <!-- 内容区域 -->
+            <div class="content">
+                <div class="content-header">
+                    <h1>门店信息管理</h1>
+                    <p>管理门店详细信息</p>
+                </div>
+
+                <!-- 操作按钮 -->
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="openModal('add-store-info-modal')">添加门店信息</button>
+                    <button class="btn btn-secondary" onclick="openModal('import-store-info-modal')">批量导入</button>
+                </div>
+
+                <!-- 搜索过滤器 -->
+                <div class="search-filter">
+                    <h3>门店信息搜索</h3>
+                    <div class="filter-row">
+                        <div class="filter-item">
+                            <label for="store-id">门店ID</label>
+                            <input type="text" id="store-id" placeholder="请输入门店ID">
+                        </div>
+                        <div class="filter-item">
+                            <label for="store-name">门店名称</label>
+                            <input type="text" id="store-name" placeholder="请输入门店名称">
+                        </div>
+                        <div class="filter-item">
+                            <label for="store-region">所属区域</label>
+                            <select id="store-region">
+                                <option value="">全部</option>
+                                <option value="north">华北</option>
+                                <option value="east">华东</option>
+                                <option value="south">华南</option>
+                                <option value="west">西南</option>
+                                <option value="northeast">东北</option>
+                            </select>
+                        </div>
+                        <div class="filter-item">
+                            <label for="store-status">状态</label>
+                            <select id="store-status">
+                                <option value="">全部</option>
+                                <option value="active">正常运营</option>
+                                <option value="inactive">已关闭</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="filter-actions">
+                        <button class="btn btn-primary">搜索</button>
+                        <button class="btn btn-secondary">重置</button>
+                    </div>
+                </div>
+
+                <!-- 数据表格 -->
+                <div class="data-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>门店ID</th>
+                                <th>门店名称</th>
+                                <th>所属区域</th>
+                                <th>联系人</th>
+                                <th>联系电话</th>
+                                <th>地址</th>
+                                <th>营业时间</th>
+                                <th>状态</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>ST001</td>
+                                <td>北京朝阳小鹏体验中心</td>
+                                <td>华北</td>
+                                <td>张明</td>
+                                <td>13800138001</td>
+                                <td>北京市朝阳区建国路88号</td>
+                                <td>09:00-21:00</td>
+                                <td><span class="status status-active">正常运营</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-sm btn-view" onclick="openModal('view-store-info-modal')">查看</button>
+                                        <button class="btn btn-sm btn-edit" onclick="openModal('edit-store-info-modal')">编辑</button>
+                                        <button class="btn btn-sm btn-delete" onclick="confirmDelete('ST001')">删除</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>ST002</td>
+                                <td>上海浦东小鹏体验中心</td>
+                                <td>华东</td>
+                                <td>李强</td>
+                                <td>13900139002</td>
+                                <td>上海市浦东新区世纪大道100号</td>
+                                <td>09:00-21:00</td>
+                                <td><span class="status status-active">正常运营</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-sm btn-view" onclick="openModal('view-store-info-modal')">查看</button>
+                                        <button class="btn btn-sm btn-edit" onclick="openModal('edit-store-info-modal')">编辑</button>
+                                        <button class="btn btn-sm btn-delete" onclick="confirmDelete('ST002')">删除</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>ST003</td>
+                                <td>广州天河小鹏体验中心</td>
+                                <td>华南</td>
+                                <td>王芳</td>
+                                <td>13700137003</td>
+                                <td>广州市天河区天河路385号</td>
+                                <td>09:00-21:00</td>
+                                <td><span class="status status-active">正常运营</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-sm btn-view" onclick="openModal('view-store-info-modal')">查看</button>
+                                        <button class="btn btn-sm btn-edit" onclick="openModal('edit-store-info-modal')">编辑</button>
+                                        <button class="btn btn-sm btn-delete" onclick="confirmDelete('ST003')">删除</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>ST004</td>
+                                <td>深圳南山小鹏体验中心</td>
+                                <td>华南</td>
+                                <td>赵伟</td>
+                                <td>13600136004</td>
+                                <td>深圳市南山区科技园南区</td>
+                                <td>09:00-21:00</td>
+                                <td><span class="status status-inactive">已关闭</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-sm btn-view" onclick="openModal('view-store-info-modal')">查看</button>
+                                        <button class="btn btn-sm btn-edit" onclick="openModal('edit-store-info-modal')">编辑</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- 分页 -->
+                <div class="pagination">
+                    <button>上一页</button>
+                    <button class="active">1</button>
+                    <button>2</button>
+                    <button>3</button>
+                    <button>下一页</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 添加门店信息模态框 -->
+    <div id="add-store-info-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>添加门店信息</h2>
+                <span class="close" onclick="closeModal('add-store-info-modal')">&times;</span>
+            </div>
+            <div class="form-group">
+                <label for="add-store-name">门店名称</label>
+                <input type="text" id="add-store-name" placeholder="请输入门店名称">
+            </div>
+            <div class="form-group">
+                <label for="add-store-region">所属区域</label>
+                <select id="add-store-region">
+                    <option value="">请选择区域</option>
+                    <option value="north">华北</option>
+                    <option value="east">华东</option>
+                    <option value="south">华南</option>
+                    <option value="west">西南</option>
+                    <option value="northeast">东北</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="add-store-contact">联系人</label>
+                <input type="text" id="add-store-contact" placeholder="请输入联系人">
+            </div>
+            <div class="form-group">
+                <label for="add-store-phone">联系电话</label>
+                <input type="text" id="add-store-phone" placeholder="请输入联系电话">
+            </div>
+            <div class="form-group">
+                <label for="add-store-address">地址</label>
+                <textarea id="add-store-address" placeholder="请输入门店地址"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="add-store-hours">营业时间</label>
+                <input type="text" id="add-store-hours" placeholder="如：09:00-21:00">
+            </div>
+            <div class="form-group">
+                <label for="add-store-capacity">容纳能力</label>
+                <input type="number" id="add-store-capacity" placeholder="请输入容纳能力">
+            </div>
+            <div class="form-group">
+                <label for="add-store-status">状态</label>
+                <select id="add-store-status">
+                    <option value="active">正常运营</option>
+                    <option value="inactive">已关闭</option>
+                </select>
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-secondary" onclick="closeModal('add-store-info-modal')">取消</button>
+                <button class="btn btn-primary" onclick="closeModal('add-store-info-modal'); showMessage('门店信息添加成功')">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 查看门店信息模态框 -->
+    <div id="view-store-info-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>查看门店信息详情</h2>
+                <span class="close" onclick="closeModal('view-store-info-modal')">&times;</span>
+            </div>
+            <div class="form-group">
+                <label>门店ID</label>
+                <input type="text" value="ST001" disabled>
+            </div>
+            <div class="form-group">
+                <label>门店名称</label>
+                <input type="text" value="北京朝阳小鹏体验中心" disabled>
+            </div>
+            <div class="form-group">
+                <label>所属区域</label>
+                <input type="text" value="华北" disabled>
+            </div>
+            <div class="form-group">
+                <label>联系人</label>
+                <input type="text" value="张明" disabled>
+            </div>
+            <div class="form-group">
+                <label>联系电话</label>
+                <input type="text" value="13800138001" disabled>
+            </div>
+            <div class="form-group">
+                <label>地址</label>
+                <textarea disabled>北京市朝阳区建国路88号</textarea>
+            </div>
+            <div class="form-group">
+                <label>营业时间</label>
+                <input type="text" value="09:00-21:00" disabled>
+            </div>
+            <div class="form-group">
+                <label>容纳能力</label>
+                <input type="text" value="50" disabled>
+            </div>
+            <div class="form-group">
+                <label>状态</label>
+                <input type="text" value="正常运营" disabled>
+            </div>
+            <div class="form-group">
+                <label>创建时间</label>
+                <input type="text" value="2024-01-01 10:00:00" disabled>
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-secondary" onclick="closeModal('view-store-info-modal')">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 编辑门店信息模态框 -->
+    <div id="edit-store-info-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>编辑门店信息</h2>
+                <span class="close" onclick="closeModal('edit-store-info-modal')">&times;</span>
+            </div>
+            <div class="form-group">
+                <label>门店ID</label>
+                <input type="text" value="ST001" disabled>
+            </div>
+            <div class="form-group">
+                <label for="edit-store-name">门店名称</label>
+                <input type="text" id="edit-store-name" value="北京朝阳小鹏体验中心">
+            </div>
+            <div class="form-group">
+                <label for="edit-store-region">所属区域</label>
+                <select id="edit-store-region">
+                    <option value="north" selected>华北</option>
+                    <option value="east">华东</option>
+                    <option value="south">华南</option>
+                    <option value="west">西南</option>
+                    <option value="northeast">东北</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="edit-store-contact">联系人</label>
+                <input type="text" id="edit-store-contact" value="张明">
+            </div>
+            <div class="form-group">
+                <label for="edit-store-phone">联系电话</label>
+                <input type="text" id="edit-store-phone" value="13800138001">
+            </div>
+            <div class="form-group">
+                <label for="edit-store-address">地址</label>
+                <textarea id="edit-store-address">北京市朝阳区建国路88号</textarea>
+            </div>
+            <div class="form-group">
+                <label for="edit-store-hours">营业时间</label>
+                <input type="text" id="edit-store-hours" value="09:00-21:00">
+            </div>
+            <div class="form-group">
+                <label for="edit-store-capacity">容纳能力</label>
+                <input type="number" id="edit-store-capacity" value="50">
+            </div>
+            <div class="form-group">
+                <label for="edit-store-status">状态</label>
+                <select id="edit-store-status">
+                    <option value="active" selected>正常运营</option>
+                    <option value="inactive">已关闭</option>
+                </select>
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-secondary" onclick="closeModal('edit-store-info-modal')">取消</button>
+                <button class="btn btn-primary" onclick="closeModal('edit-store-info-modal'); showMessage('门店信息编辑成功')">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 批量导入模态框 -->
+    <div id="import-store-info-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>批量导入门店信息</h2>
+                <span class="close" onclick="closeModal('import-store-info-modal')">&times;</span>
+            </div>
+            <div class="form-group">
+                <label>下载模板</label>
+                <a href="#" class="btn btn-secondary">下载Excel模板</a>
+            </div>
+            <div class="form-group">
+                <label>上传文件</label>
+                <input type="file" accept=".xlsx, .xls">
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-secondary" onclick="closeModal('import-store-info-modal')">取消</button>
+                <button class="btn btn-primary" onclick="closeModal('import-store-info-modal'); showMessage('门店信息导入成功')">导入</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 打开模态框
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'block';
+        }
+
+        // 关闭模态框
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // 点击模态框外部关闭
+        window.onclick = function(event) {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                if (event.target == modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        }
+
+        // 显示消息
+        function showMessage(message) {
+            alert(message);
+        }
+
+        // 确认删除
+        function confirmDelete(storeId) {
+            if (confirm(`确定要删除门店 ${storeId} 的信息吗？`)) {
+                showMessage('门店信息删除成功');
+            }
+        }
+    </script>
+</body>
+</html>

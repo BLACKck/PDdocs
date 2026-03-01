@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小鹏汽车客户管理后台 - 销售政策管理</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background-color: #f0f2f5;
+        }
+        
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+        
+        /* 侧边栏 */
+        .sidebar {
+            width: 240px;
+            background-color: #001529;
+            color: white;
+            padding: 20px 0;
+        }
+        
+        .sidebar-logo {
+            padding: 0 24px;
+            margin-bottom: 30px;
+        }
+        
+        .sidebar-logo h1 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+        }
+        
+        .sidebar-menu-item {
+            margin-bottom: 5px;
+        }
+        
+        .sidebar-menu-item a {
+            display: block;
+            padding: 12px 24px;
+            color: rgba(255, 255, 255, 0.65);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .sidebar-menu-item a:hover {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .sidebar-menu-item.active a {
+            color: white;
+            background-color: #1890ff;
+        }
+        
+        /* 主内容区 */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* 顶部导航栏 */
+        .top-nav {
+            background-color: white;
+            padding: 0 24px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.09);
+        }
+        
+        .top-nav-left {
+            display: flex;
+            align-items: center;
+        }
+        
+        .top-nav-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-left: 24px;
+        }
+        
+        .top-nav-right {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-info {
+            margin-right: 20px;
+        }
+        
+        /* 内容区域 */
+        .content {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+        }
+        
+        /* 操作栏 */
+        .action-bar {
+            background-color: white;
+            padding: 16px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.09);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .add-btn {
+            padding: 8px 16px;
+            background-color: #1890ff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .add-btn:hover {
+            background-color: #40a9ff;
+        }
+        
+        /* 搜索筛选 */
+        .search-filter {
+            background-color: white;
+            padding: 16px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.09);
+            margin-bottom: 20px;
+        }
+        
+        .search-row {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .search-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .search-item label {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        
+        .search-item input,
+        .search-item select {
+            padding: 8px;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .search-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .search-btn,
+        .reset-btn {
+            padding: 8px 16px;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .search-btn {
+            background-color: #1890ff;
+            color: white;
+            border-color: #1890ff;
+        }
+        
+        .search-btn:hover {
+            background-color: #40a9ff;
+        }
+        
+        .reset-btn {
+            background-color: white;
+            color: #333;
+        }
+        
+        .reset-btn:hover {
+            border-color: #1890ff;
+            color: #1890ff;
+        }
+        
+        /* 表格 */
+        .table-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.09);
+            overflow: hidden;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th,
+        td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        th {
+            background-color: #fafafa;
+            font-weight: 600;
+            font-size: 14px;
+            color: #333;
+        }
+        
+        td {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .status {
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+        }
+        
+        .status.draft {
+            background-color: rgba(255, 159, 64, 0.1);
+            color: #ff9f43;
+        }
+        
+        .status.published {
+            background-color: rgba(52, 199, 89, 0.1);
+            color: #34c759;
+        }
+        
+        .status.expired {
+            background-color: rgba(255, 77, 79, 0.1);
+            color: #ff4d4f;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .action-btn {
+            padding: 4px 8px;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+            background-color: white;
+            color: #333;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+        
+        .action-btn:hover {
+            border-color: #1890ff;
+            color: #1890ff;
+        }
+        
+        /* 分页 */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+            gap: 8px;
+        }
+        
+        .page-btn {
+            padding: 4px 12px;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+            background-color: white;
+            color: #333;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .page-btn:hover {
+            border-color: #1890ff;
+            color: #1890ff;
+        }
+        
+        .page-btn.active {
+            background-color: #1890ff;
+            color: white;
+            border-color: #1890ff;
+        }
+        
+        /* 模态框 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background-color: white;
+            border-radius: 8px;
+            width: 600px;
+            max-width: 90%;
+            margin: 100px auto;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #999;
+        }
+        
+        .modal-body {
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 16px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #333;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+        }
+        
+        .modal-btn {
+            padding: 8px 16px;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .modal-btn.cancel {
+            background-color: white;
+            color: #333;
+        }
+        
+        .modal-btn.cancel:hover {
+            border-color: #1890ff;
+            color: #1890ff;
+        }
+        
+        .modal-btn.confirm {
+            background-color: #1890ff;
+            color: white;
+            border-color: #1890ff;
+        }
+        
+        .modal-btn.confirm:hover {
+            background-color: #40a9ff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 侧边栏 -->
+        <div class="sidebar">
+            <div class="sidebar-logo">
+                <h1>小鹏汽车管理后台</h1>
+            </div>
+            <ul class="sidebar-menu">
+                <li class="sidebar-menu-item">
+                    <a href="首页.html">首页</a>
+                </li>
+                <li class="sidebar-menu-item">
+                    <a href="客户线索管理页面.html">客户线索管理</a>
+                </li>
+                <li class="sidebar-menu-item">
+                    <a href="客户商机管理页面.html">客户商机管理</a>
+                </li>
+                <li class="sidebar-menu-item">
+                    <a href="客户订单管理页面.html">客户订单管理</a>
+                </li>
+                <li class="sidebar-menu-item">
+                    <a href="待售车辆管理页面.html">待售车辆管理</a>
+                </li>
+                <li class="sidebar-menu-item active">
+                    <a href="销售政策管理页面.html">销售政策管理</a>
+                </li>
+                <li class="sidebar-menu-item">
+                    <a href="门店管理页面.html">门店管理</a>
+                </li>
+                <li class="sidebar-menu-item">
+                    <a href="订单配车页面.html">订单配车</a>
+                </li>
+                <li class="sidebar-menu-item">
+                    <a href="门店信息管理页面.html">门店信息管理</a>
+                </li>
+                <li class="sidebar-menu-item">
+                    <a href="门店线索及订单查看页面.html">门店线索及订单查看</a>
+                </li>
+            </ul>
+        </div>
+        
+        <!-- 主内容区 -->
+        <div class="main-content">
+            <!-- 顶部导航栏 -->
+            <div class="top-nav">
+                <div class="top-nav-left">
+                    <div class="top-nav-title">销售政策管理</div>
+                </div>
+                <div class="top-nav-right">
+                    <div class="user-info">管理员</div>
+                    <button class="action-btn">退出登录</button>
+                </div>
+            </div>
+            
+            <!-- 内容区域 -->
+            <div class="content">
+                <!-- 操作栏 -->
+                <div class="action-bar">
+                    <h2>政策列表</h2>
+                    <button class="add-btn" onclick="openAddModal()">新增政策</button>
+                </div>
+                
+                <!-- 搜索筛选 -->
+                <div class="search-filter">
+                    <div class="search-row">
+                        <div class="search-item">
+                            <label>政策状态</label>
+                            <select>
+                                <option value="">全部</option>
+                                <option value="draft">草稿</option>
+                                <option value="published">已发布</option>
+                                <option value="expired">已过期</option>
+                            </select>
+                        </div>
+                        <div class="search-item">
+                            <label>政策类型</label>
+                            <select>
+                                <option value="">全部</option>
+                                <option value="discount">折扣</option>
+                                <option value="promotion">促销</option>
+                                <option value="gift">赠品</option>
+                                <option value="other">其他</option>
+                            </select>
+                        </div>
+                        <div class="search-item">
+                            <label>适用范围</label>
+                            <select>
+                                <option value="">全部</option>
+                                <option value="national">全国</option>
+                                <option value="region">区域</option>
+                                <option value="store">门店</option>
+                            </select>
+                        </div>
+                        <div class="search-item">
+                            <label>有效期</label>
+                            <input type="date">
+                        </div>
+                        <div class="search-item">
+                            <label>至</label>
+                            <input type="date">
+                        </div>
+                    </div>
+                    <div class="search-row">
+                        <div class="search-item">
+                            <label>政策名称</label>
+                            <input type="text" placeholder="请输入政策名称">
+                        </div>
+                        <div class="search-item" style="align-self: flex-end;">
+                            <div class="search-buttons">
+                                <button class="search-btn">搜索</button>
+                                <button class="reset-btn">重置</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 表格 -->
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox"></th>
+                                <th>政策ID</th>
+                                <th>政策名称</th>
+                                <th>政策类型</th>
+                                <th>适用范围</th>
+                                <th>有效期开始</th>
+                                <th>有效期结束</th>
+                                <th>政策状态</th>
+                                <th>创建时间</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><input type="checkbox"></td>
+                                <td>POL-2026-001</td>
+                                <td>2026年春季促销活动</td>
+                                <td>促销</td>
+                                <td>全国</td>
+                                <td>2026-03-01</td>
+                                <td>2026-03-31</td>
+                                <td><span class="status published">已发布</span></td>
+                                <td>2026-02-28</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="action-btn" onclick="openDetailModal()">详情</button>
+                                        <button class="action-btn" onclick="openEditModal()">编辑</button>
+                                        <button class="action-btn" onclick="openAnalyzeModal()">分析</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox"></td>
+                                <td>POL-2026-002</td>
+                                <td>小鹏P7折扣政策</td>
+                                <td>折扣</td>
+                                <td>全国</td>
+                                <td>2026-03-01</td>
+                                <td>2026-03-31</td>
+                                <td><span class="status published">已发布</span></td>
+                                <td>2026-02-27</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="action-btn" onclick="openDetailModal()">详情</button>
+                                        <button class="action-btn" onclick="openEditModal()">编辑</button>
+                                        <button class="action-btn" onclick="openAnalyzeModal()">分析</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox"></td>
+                                <td>POL-2026-003</td>
+                                <td>门店开业促销</td>
+                                <td>促销</td>
+                                <td>门店</td>
+                                <td>2026-03-01</td>
+                                <td>2026-03-07</td>
+                                <td><span class="status draft">草稿</span></td>
+                                <td>2026-02-26</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="action-btn" onclick="openDetailModal()">详情</button>
+                                        <button class="action-btn" onclick="openEditModal()">编辑</button>
+                                        <button class="action-btn" onclick="openPublishModal()">发布</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox"></td>
+                                <td>POL-2026-004</td>
+                                <td>2026年春节促销活动</td>
+                                <td>促销</td>
+                                <td>全国</td>
+                                <td>2026-02-01</td>
+                                <td>2026-02-29</td>
+                                <td><span class="status expired">已过期</span></td>
+                                <td>2026-01-28</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="action-btn" onclick="openDetailModal()">详情</button>
+                                        <button class="action-btn" onclick="openAnalyzeModal()">分析</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox"></td>
+                                <td>POL-2026-005</td>
+                                <td>小鹏G9赠品政策</td>
+                                <td>赠品</td>
+                                <td>全国</td>
+                                <td>2026-03-01</td>
+                                <td>2026-03-31</td>
+                                <td><span class="status draft">草稿</span></td>
+                                <td>2026-02-25</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="action-btn" onclick="openDetailModal()">详情</button>
+                                        <button class="action-btn" onclick="openEditModal()">编辑</button>
+                                        <button class="action-btn" onclick="openPublishModal()">发布</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- 分页 -->
+                <div class="pagination">
+                    <button class="page-btn">上一页</button>
+                    <button class="page-btn active">1</button>
+                    <button class="page-btn">2</button>
+                    <button class="page-btn">3</button>
+                    <button class="page-btn">下一页</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 新增政策模态框 -->
+    <div class="modal" id="addModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">新增政策</h3>
+                <button class="close-btn" onclick="closeAddModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>政策名称</label>
+                    <input type="text" placeholder="请输入政策名称">
+                </div>
+                <div class="form-group">
+                    <label>政策类型</label>
+                    <select>
+                        <option value="discount">折扣</option>
+                        <option value="promotion">促销</option>
+                        <option value="gift">赠品</option>
+                        <option value="other">其他</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>适用范围</label>
+                    <select>
+                        <option value="national">全国</option>
+                        <option value="region">区域</option>
+                        <option value="store">门店</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>有效期开始</label>
+                    <input type="date">
+                </div>
+                <div class="form-group">
+                    <label>有效期结束</label>
+                    <input type="date">
+                </div>
+                <div class="form-group">
+                    <label>政策内容</label>
+                    <textarea placeholder="请输入政策内容"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn cancel" onclick="closeAddModal()">取消</button>
+                <button class="modal-btn confirm" onclick="savePolicy()">保存</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 政策详情模态框 -->
+    <div class="modal" id="detailModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">政策详情</h3>
+                <button class="close-btn" onclick="closeDetailModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>政策ID</label>
+                    <input type="text" value="POL-2026-001" disabled>
+                </div>
+                <div class="form-group">
+                    <label>政策名称</label>
+                    <input type="text" value="2026年春季促销活动" disabled>
+                </div>
+                <div class="form-group">
+                    <label>政策类型</label>
+                    <input type="text" value="促销" disabled>
+                </div>
+                <div class="form-group">
+                    <label>适用范围</label>
+                    <input type="text" value="全国" disabled>
+                </div>
+                <div class="form-group">
+                    <label>有效期开始</label>
+                    <input type="text" value="2026-03-01" disabled>
+                </div>
+                <div class="form-group">
+                    <label>有效期结束</label>
+                    <input type="text" value="2026-03-31" disabled>
+                </div>
+                <div class="form-group">
+                    <label>政策内容</label>
+                    <textarea disabled>2026年春季促销活动：购买小鹏汽车可享受以下优惠：1. 首付低至10%；2. 最高可享3年0息贷款；3. 置换补贴最高10000元；4. 赠送充电桩及安装服务。</textarea>
+                </div>
+                <div class="form-group">
+                    <label>政策状态</label>
+                    <input type="text" value="已发布" disabled>
+                </div>
+                <div class="form-group">
+                    <label>创建时间</label>
+                    <input type="text" value="2026-02-28" disabled>
+                </div>
+                <div class="form-group">
+                    <label>创建人</label>
+                    <input type="text" value="管理员" disabled>
+                </div>
+                <div class="form-group">
+                    <label>发布时间</label>
+                    <input type="text" value="2026-02-29" disabled>
+                </div>
+                <div class="form-group">
+                    <label>发布人</label>
+                    <input type="text" value="管理员" disabled>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn confirm" onclick="closeDetailModal()">关闭</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 编辑政策模态框 -->
+    <div class="modal" id="editModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">编辑政策</h3>
+                <button class="close-btn" onclick="closeEditModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>政策名称</label>
+                    <input type="text" value="2026年春季促销活动">
+                </div>
+                <div class="form-group">
+                    <label>政策类型</label>
+                    <select>
+                        <option value="discount">折扣</option>
+                        <option value="promotion" selected>促销</option>
+                        <option value="gift">赠品</option>
+                        <option value="other">其他</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>适用范围</label>
+                    <select>
+                        <option value="national" selected>全国</option>
+                        <option value="region">区域</option>
+                        <option value="store">门店</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>有效期开始</label>
+                    <input type="date" value="2026-03-01">
+                </div>
+                <div class="form-group">
+                    <label>有效期结束</label>
+                    <input type="date" value="2026-03-31">
+                </div>
+                <div class="form-group">
+                    <label>政策内容</label>
+                    <textarea>2026年春季促销活动：购买小鹏汽车可享受以下优惠：1. 首付低至10%；2. 最高可享3年0息贷款；3. 置换补贴最高10000元；4. 赠送充电桩及安装服务。</textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn cancel" onclick="closeEditModal()">取消</button>
+                <button class="modal-btn confirm" onclick="updatePolicy()">保存</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 发布政策模态框 -->
+    <div class="modal" id="publishModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">发布政策</h3>
+                <button class="close-btn" onclick="closePublishModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>政策ID</label>
+                    <input type="text" value="POL-2026-003" disabled>
+                </div>
+                <div class="form-group">
+                    <label>政策名称</label>
+                    <input type="text" value="门店开业促销" disabled>
+                </div>
+                <div class="form-group">
+                    <label>发布确认</label>
+                    <p>确定要发布此政策吗？发布后将通知相关门店。</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn cancel" onclick="closePublishModal()">取消</button>
+                <button class="modal-btn confirm" onclick="publishPolicy()">发布</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 政策分析模态框 -->
+    <div class="modal" id="analyzeModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">政策分析</h3>
+                <button class="close-btn" onclick="closeAnalyzeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>政策ID</label>
+                    <input type="text" value="POL-2026-001" disabled>
+                </div>
+                <div class="form-group">
+                    <label>政策名称</label>
+                    <input type="text" value="2026年春季促销活动" disabled>
+                </div>
+                <div class="form-group">
+                    <label>分析结果</label>
+                    <p>销售数量：120辆</p>
+                    <p>销售金额：2400万元</p>
+                    <p>转化率：25%</p>
+                    <p>活动效果：良好</p>
+                </div>
+                <div class="form-group">
+                    <label>分析报告</label>
+                    <textarea placeholder="请输入分析报告"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn confirm" onclick="closeAnalyzeModal()">关闭</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 新增政策模态框
+        function openAddModal() {
+            document.getElementById('addModal').style.display = 'block';
+        }
+        
+        function closeAddModal() {
+            document.getElementById('addModal').style.display = 'none';
+        }
+        
+        function savePolicy() {
+            alert('政策保存成功！');
+            closeAddModal();
+        }
+        
+        // 政策详情模态框
+        function openDetailModal() {
+            document.getElementById('detailModal').style.display = 'block';
+        }
+        
+        function closeDetailModal() {
+            document.getElementById('detailModal').style.display = 'none';
+        }
+        
+        // 编辑政策模态框
+        function openEditModal() {
+            document.getElementById('editModal').style.display = 'block';
+        }
+        
+        function closeEditModal() {
+            document.getElementById('editModal').style.display = 'none';
+        }
+        
+        function updatePolicy() {
+            alert('政策更新成功！');
+            closeEditModal();
+        }
+        
+        // 发布政策模态框
+        function openPublishModal() {
+            document.getElementById('publishModal').style.display = 'block';
+        }
+        
+        function closePublishModal() {
+            document.getElementById('publishModal').style.display = 'none';
+        }
+        
+        function publishPolicy() {
+            alert('政策发布成功！');
+            closePublishModal();
+        }
+        
+        // 政策分析模态框
+        function openAnalyzeModal() {
+            document.getElementById('analyzeModal').style.display = 'block';
+        }
+        
+        function closeAnalyzeModal() {
+            document.getElementById('analyzeModal').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
