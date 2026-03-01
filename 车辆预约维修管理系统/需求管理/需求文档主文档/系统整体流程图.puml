@@ -1,0 +1,72 @@
+@startuml
+'系统整体流程图
+
+title 车辆预约维修管理系统整体流程
+
+actor 客户
+actor 门店管理员
+actor 维修人员
+actor 系统管理员
+
+rectangle "对客前端" as FrontEnd {
+  card "用户管理" as UserMgmt
+  card "车辆管理" as CarMgmt
+  card "预约管理" as OrderMgmt
+  card "维修进度查询" as ProgressQuery
+  card "历史记录查询" as HistoryQuery
+  card "在线沟通" as Communication
+  card "费用查询" as CostQuery
+}
+
+rectangle "店端管理系统" as BackEnd {
+  card "系统管理" as SystemMgmt
+  card "客户信息管理" as CustomerMgmt
+  card "车辆信息管理" as CarInfoMgmt
+  card "配件信息管理" as PartsMgmt
+  card "预约管理" as OrderMgmtBack
+  card "维修流程管理" as RepairProcessMgmt
+  card "财务管理" as FinanceMgmt
+  card "数据分析" as DataAnalysis
+}
+
+rectangle "后台服务" as BackService {
+  card "API接口" as API
+  card "业务逻辑处理" as BusinessLogic
+  card "数据存储" as DataStorage
+}
+
+' 连接关系
+客户 --> FrontEnd
+门店管理员 --> BackEnd
+维修人员 --> BackEnd
+系统管理员 --> BackEnd
+
+FrontEnd --> BackService
+BackEnd --> BackService
+BackService --> DataStorage
+
+' 前端模块连接
+客户 --> UserMgmt
+UserMgmt --> CarMgmt
+CarMgmt --> OrderMgmt
+OrderMgmt --> ProgressQuery
+ProgressQuery --> HistoryQuery
+HistoryQuery --> CostQuery
+OrderMgmt --> Communication
+
+' 后端模块连接
+门店管理员 --> SystemMgmt
+门店管理员 --> CustomerMgmt
+门店管理员 --> CarInfoMgmt
+门店管理员 --> PartsMgmt
+门店管理员 --> OrderMgmtBack
+门店管理员 --> RepairProcessMgmt
+门店管理员 --> FinanceMgmt
+门店管理员 --> DataAnalysis
+
+维修人员 --> OrderMgmtBack
+维修人员 --> RepairProcessMgmt
+
+系统管理员 --> SystemMgmt
+
+@enduml

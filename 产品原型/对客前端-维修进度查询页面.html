@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>车辆预约维修系统 - 维修进度查询</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3b82f6',
+                        secondary: '#f59e0b',
+                        success: '#10b981',
+                        danger: '#ef4444',
+                        dark: '#1e293b',
+                        light: '#f8fafc'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- 导航栏 -->
+    <nav class="bg-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="对客前端-首页.html" class="flex-shrink-0 flex items-center">
+                        <i class="fa fa-car text-primary text-2xl mr-2"></i>
+                        <span class="text-xl font-bold text-dark">车辆预约维修系统</span>
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="对客前端-预约车辆维修页面.html" class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100">预约维修</a>
+                    <a href="对客前端-车辆信息管理页面.html" class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100">我的车辆</a>
+                    <a href="对客前端-预约管理页面.html" class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100">预约管理</a>
+                    <a href="对客前端-历史记录查询页面.html" class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100">历史记录</a>
+                    <div class="relative">
+                        <button type="button" class="flex items-center text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-md px-3 py-2">
+                            <i class="fa fa-user-circle text-lg mr-2"></i>
+                            <span>张三</span>
+                            <i class="fa fa-caret-down ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主内容区 -->
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <h2 class="text-2xl font-bold text-dark mb-6">维修进度查询</h2>
+
+        <!-- 维修记录选择 -->
+        <div class="bg-white rounded-lg shadow-sm p-6 mb-8">
+            <h3 class="text-lg font-medium text-dark mb-4">选择维修记录</h3>
+            <div class="space-y-4">
+                <div class="flex items-center p-4 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
+                    <input type="radio" name="repair-record" id="record1" class="h-4 w-4 text-primary focus:ring-primary border-gray-300" checked>
+                    <label for="record1" class="ml-3 flex-1">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <p class="text-md font-medium text-dark">京B67890 - 丰田 卡罗拉</p>
+                                <p class="text-sm text-gray-500">故障维修 - 2026-03-01 10:00</p>
+                            </div>
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">维修中</span>
+                        </div>
+                    </label>
+                </div>
+                <div class="flex items-center p-4 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
+                    <input type="radio" name="repair-record" id="record2" class="h-4 w-4 text-primary focus:ring-primary border-gray-300">
+                    <label for="record2" class="ml-3 flex-1">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <p class="text-md font-medium text-dark">京A12345 - 大众 帕萨特</p>
+                                <p class="text-sm text-gray-500">常规保养 - 2026-03-05 14:00</p>
+                            </div>
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">已确认</span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- 维修进度 -->
+        <div class="bg-white rounded-lg shadow-sm p-6">
+            <h3 class="text-lg font-medium text-dark mb-6">维修进度</h3>
+            <div class="space-y-8">
+                <!-- 进度步骤 -->
+                <div class="relative">
+                    <!-- 连接线 -->
+                    <div class="absolute left-4 top-10 bottom-0 w-0.5 bg-gray-200"></div>
+                    
+                    <!-- 步骤 1 -->
+                    <div class="flex mb-8">
+                        <div class="flex-shrink-0 w-8 h-8 rounded-full bg-success flex items-center justify-center text-white">
+                            <i class="fa fa-check"></i>
+                        </div>
+                        <div class="ml-4">
+                            <h4 class="text-md font-medium text-dark">预约确认</h4>
+                            <p class="text-sm text-gray-500 mt-1">2026-03-01 09:00</p>
+                            <p class="text-sm text-gray-600 mt-2">您的预约已确认，维修师傅将为您的车辆进行检查。</p>
+                        </div>
+                    </div>
+                    
+                    <!-- 步骤 2 -->
+                    <div class="flex mb-8">
+                        <div class="flex-shrink-0 w-8 h-8 rounded-full bg-success flex items-center justify-center text-white">
+                            <i class="fa fa-check"></i>
+                        </div>
+                        <div class="ml-4">
+                            <h4 class="text-md font-medium text-dark">车辆检查</h4>
+                            <p class="text-sm text-gray-500 mt-1">2026-03-01 10:30</p>
+                            <p class="text-sm text-gray-600 mt-2">维修师傅已完成车辆检查，发现发动机故障，需要更换零部件。</p>
+                        </div>
+                    </div>
+                    
+                    <!-- 步骤 3 -->
+                    <div class="flex mb-8">
+                        <div class="flex-shrink-0 w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white">
+                            <i class="fa fa-cog"></i>
+                        </div>
+                        <div class="ml-4">
+                            <h4 class="text-md font-medium text-dark">维修中</h4>
+                            <p class="text-sm text-gray-500 mt-1">2026-03-01 11:00</p>
+                            <p class="text-sm text-gray-600 mt-2">维修师傅正在更换发动机零部件，预计需要2小时完成。</p>
+                        </div>
+                    </div>
+                    
+                    <!-- 步骤 4 -->
+                    <div class="flex">
+                        <div class="flex-shrink-0 w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-500">
+                            <i class="fa fa-check"></i>
+                        </div>
+                        <div class="ml-4">
+                            <h4 class="text-md font-medium text-gray-500">维修完成</h4>
+                            <p class="text-sm text-gray-400 mt-1">预计 2026-03-01 13:00</p>
+                            <p class="text-sm text-gray-400 mt-2">维修完成后，我们会通知您取车。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 维修详情 -->
+                <div class="mt-8 pt-6 border-t border-gray-200">
+                    <h4 class="text-md font-medium text-dark mb-4">维修详情</h4>
+                    <div class="space-y-4">
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">维修项目</span>
+                            <span class="text-sm text-gray-900">发动机故障维修</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">更换配件</span>
+                            <span class="text-sm text-gray-900">发动机火花塞 × 4</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">预计费用</span>
+                            <span class="text-sm text-gray-900">¥1,280.00</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">预计完成时间</span>
+                            <span class="text-sm text-gray-900">2026-03-01 13:00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 操作按钮 -->
+                <div class="mt-8 flex justify-end space-x-4">
+                    <a href="对客前端-在线沟通页面.html" class="px-4 py-2 border border-primary text-primary hover:bg-primary/10 rounded-md transition-colors duration-200">
+                        <i class="fa fa-comment mr-2"></i>在线沟通
+                    </a>
+                    <a href="对客前端-费用查询页面.html" class="px-4 py-2 bg-primary hover:bg-primary/90 text-white font-medium rounded-md transition-colors duration-200">
+                        <i class="fa fa-money mr-2"></i>查看费用
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-white border-t border-gray-200 mt-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="text-gray-500 text-sm">
+                    © 2026 车辆预约维修系统. 保留所有权利.
+                </div>
+                <div class="mt-4 md:mt-0">
+                    <a href="#" class="text-gray-500 hover:text-primary mr-4">关于我们</a>
+                    <a href="#" class="text-gray-500 hover:text-primary mr-4">服务条款</a>
+                    <a href="#" class="text-gray-500 hover:text-primary">联系我们</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

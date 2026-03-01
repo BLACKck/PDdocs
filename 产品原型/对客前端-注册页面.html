@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>车辆预约维修系统 - 注册</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3b82f6',
+                        secondary: '#f59e0b',
+                        success: '#10b981',
+                        danger: '#ef4444',
+                        dark: '#1e293b',
+                        light: '#f8fafc'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex items-center justify-center">
+    <div class="w-full max-w-md">
+        <div class="bg-white rounded-lg shadow-lg p-8">
+            <div class="text-center mb-8">
+                <h1 class="text-2xl font-bold text-dark">车辆预约维修系统</h1>
+                <p class="text-gray-500 mt-2">注册新账户</p>
+            </div>
+            
+            <form id="register-form" class="space-y-6">
+                <div>
+                    <label for="name" class="block text-sm font-medium text-gray-700 mb-1">姓名</label>
+                    <input type="text" id="name" name="name" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="请输入姓名" required>
+                </div>
+                
+                <div>
+                    <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">手机号</label>
+                    <div class="flex space-x-2">
+                        <input type="tel" id="phone" name="phone" class="flex-1 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="请输入手机号" required>
+                        <button type="button" id="send-code" class="px-4 py-2 bg-primary hover:bg-primary/90 text-white font-medium rounded-md transition-colors duration-200 whitespace-nowrap">
+                            发送验证码
+                        </button>
+                    </div>
+                </div>
+                
+                <div>
+                    <label for="code" class="block text-sm font-medium text-gray-700 mb-1">验证码</label>
+                    <input type="text" id="code" name="code" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="请输入验证码" required>
+                </div>
+                
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700 mb-1">密码</label>
+                    <input type="password" id="password" name="password" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="请设置密码" required>
+                </div>
+                
+                <div>
+                    <label for="confirm-password" class="block text-sm font-medium text-gray-700 mb-1">确认密码</label>
+                    <input type="password" id="confirm-password" name="confirm-password" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="请确认密码" required>
+                </div>
+                
+                <div>
+                    <button type="submit" class="w-full bg-primary hover:bg-primary/90 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200">
+                        注册
+                    </button>
+                </div>
+                
+                <div class="text-center">
+                    <p class="text-sm text-gray-600">
+                        已有账户？ <a href="对客前端-登录页面.html" class="font-medium text-primary hover:text-primary/80">立即登录</a>
+                    </p>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        // 发送验证码功能
+        document.getElementById('send-code').addEventListener('click', function() {
+            const phone = document.getElementById('phone').value;
+            if (phone) {
+                // 模拟发送验证码
+                alert('验证码已发送到您的手机');
+                // 倒计时功能
+                let countdown = 60;
+                const button = this;
+                button.disabled = true;
+                button.textContent = `${countdown}秒后重试`;
+                
+                const timer = setInterval(() => {
+                    countdown--;
+                    button.textContent = `${countdown}秒后重试`;
+                    if (countdown <= 0) {
+                        clearInterval(timer);
+                        button.disabled = false;
+                        button.textContent = '发送验证码';
+                    }
+                }, 1000);
+            } else {
+                alert('请输入手机号');
+            }
+        });
+        
+        // 表单提交
+        document.getElementById('register-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const phone = document.getElementById('phone').value;
+            const code = document.getElementById('code').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            
+            if (name && phone && code && password && confirmPassword) {
+                if (password === confirmPassword) {
+                    // 显示成功提示
+                    alert('注册成功！');
+                    // 跳转到登录页面
+                    window.location.href = '对客前端-登录页面.html';
+                } else {
+                    alert('两次输入的密码不一致');
+                }
+            } else {
+                alert('请填写完整的注册信息');
+            }
+        });
+    </script>
+</body>
+</html>

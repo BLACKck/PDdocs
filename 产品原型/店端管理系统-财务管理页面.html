@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>车辆预约维修系统 - 财务管理</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3b82f6',
+                        secondary: '#f59e0b',
+                        success: '#10b981',
+                        danger: '#ef4444',
+                        dark: '#1e293b',
+                        light: '#f8fafc'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- 侧边导航栏 -->
+    <div class="flex h-screen overflow-hidden">
+        <div class="bg-dark w-64 flex-shrink-0">
+            <div class="flex items-center justify-center h-16 border-b border-gray-700">
+                <h1 class="text-xl font-bold text-white">店端管理系统</h1>
+            </div>
+            <div class="mt-6">
+                <nav class="px-2">
+                    <a href="店端管理系统-首页.html" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md mb-1">
+                        <i class="fa fa-dashboard w-6"></i>
+                        <span class="ml-3">仪表盘</span>
+                    </a>
+                    <a href="店端管理系统-客户信息管理页面.html" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md mb-1">
+                        <i class="fa fa-users w-6"></i>
+                        <span class="ml-3">客户管理</span>
+                    </a>
+                    <a href="店端管理系统-车辆信息管理页面.html" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md mb-1">
+                        <i class="fa fa-car w-6"></i>
+                        <span class="ml-3">车辆管理</span>
+                    </a>
+                    <a href="店端管理系统-配件信息管理页面.html" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md mb-1">
+                        <i class="fa fa-cubes w-6"></i>
+                        <span class="ml-3">配件管理</span>
+                    </a>
+                    <a href="店端管理系统-预约管理页面.html" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md mb-1">
+                        <i class="fa fa-calendar w-6"></i>
+                        <span class="ml-3">预约管理</span>
+                    </a>
+                    <a href="店端管理系统-维修流程管理页面.html" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md mb-1">
+                        <i class="fa fa-wrench w-6"></i>
+                        <span class="ml-3">维修管理</span>
+                    </a>
+                    <a href="店端管理系统-财务管理页面.html" class="flex items-center px-4 py-3 text-white bg-primary/20 rounded-md mb-1">
+                        <i class="fa fa-money w-6"></i>
+                        <span class="ml-3">财务管理</span>
+                    </a>
+                    <a href="店端管理系统-数据分析页面.html" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md mb-1">
+                        <i class="fa fa-bar-chart w-6"></i>
+                        <span class="ml-3">数据分析</span>
+                    </a>
+                    <a href="店端管理系统-系统管理页面.html" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md mb-1">
+                        <i class="fa fa-cog w-6"></i>
+                        <span class="ml-3">系统设置</span>
+                    </a>
+                </nav>
+            </div>
+        </div>
+
+        <!-- 主内容区 -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- 顶部导航 -->
+            <div class="bg-white shadow-sm z-10">
+                <div class="flex justify-between items-center h-16 px-6">
+                    <div class="flex items-center">
+                        <button type="button" class="text-gray-500 hover:text-gray-700 focus:outline-none">
+                            <i class="fa fa-bars text-xl"></i>
+                        </button>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="relative">
+                            <button type="button" class="text-gray-500 hover:text-gray-700 focus:outline-none">
+                                <i class="fa fa-bell text-xl"></i>
+                                <span class="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-500"></span>
+                            </button>
+                        </div>
+                        <div class="relative">
+                            <button type="button" class="flex items-center text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-md px-3 py-2">
+                                <i class="fa fa-user-circle text-lg mr-2"></i>
+                                <span>管理员</span>
+                                <i class="fa fa-caret-down ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 内容区域 -->
+            <div class="flex-1 overflow-y-auto p-6">
+                <h2 class="text-2xl font-bold text-dark mb-6">财务管理</h2>
+
+                <!-- 财务概览 -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-500">本月收入</p>
+                                <h3 class="text-2xl font-bold text-dark mt-1">¥128,500</h3>
+                            </div>
+                            <div class="w-12 h-12 bg-success/10 rounded-full flex items-center justify-center">
+                                <i class="fa fa-arrow-up text-success text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-500">本月支出</p>
+                                <h3 class="text-2xl font-bold text-dark mt-1">¥86,200</h3>
+                            </div>
+                            <div class="w-12 h-12 bg-danger/10 rounded-full flex items-center justify-center">
+                                <i class="fa fa-arrow-down text-danger text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-500">本月利润</p>
+                                <h3 class="text-2xl font-bold text-dark mt-1">¥42,300</h3>
+                            </div>
+                            <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+                                <i class="fa fa-line-chart text-primary text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 收支记录 -->
+                <div class="bg-white rounded-lg shadow-sm overflow-hidden mb-8">
+                    <div class="p-6 border-b border-gray-200">
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-lg font-medium text-dark">收支记录</h3>
+                            <div class="flex space-x-2">
+                                <button class="px-3 py-1 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
+                                    导出
+                                </button>
+                                <button class="px-3 py-1 border border-primary text-primary hover:bg-primary/10 rounded-md">
+                                    新增
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">日期</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">类型</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">金额</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">描述</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">2026-03-01</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">收入</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">¥1,280.00</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">发动机故障维修</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                        <a href="#" class="text-primary hover:text-primary/80">查看</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">2026-02-28</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">收入</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">¥380.00</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">车辆检测</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                        <a href="#" class="text-primary hover:text-primary/80">查看</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">2026-02-25</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">支出</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">¥1,500.00</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">采购配件</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                        <a href="#" class="text-primary hover:text-primary/80">查看</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- 分页 -->
+                    <div class="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
+                        <div class="text-sm text-gray-700">
+                            显示 1 至 3 条，共 3 条记录
+                        </div>
+                        <div class="flex space-x-2">
+                            <button class="px-3 py-1 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 disabled:opacity-50" disabled>
+                                上一页
+                            </button>
+                            <button class="px-3 py-1 border border-primary bg-primary text-white rounded-md">
+                                1
+                            </button>
+                            <button class="px-3 py-1 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 disabled:opacity-50" disabled>
+                                下一页
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 财务报表 -->
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <h3 class="text-lg font-medium text-dark mb-4">财务报表</h3>
+                    <div class="h-64">
+                        <canvas id="financeChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 新增财务记录模态框 -->
+    <div id="addFinanceModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-lg w-full max-w-2xl">
+            <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                <h3 class="text-xl font-bold text-dark">新增财务记录</h3>
+                <button id="closeAddModal" class="text-gray-500 hover:text-gray-700 focus:outline-none">
+                    <i class="fa fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="p-6">
+                <form id="addFinanceForm">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">日期</label>
+                            <input type="date" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">类型</label>
+                            <select class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" required>
+                                <option value="">请选择类型</option>
+                                <option value="income">收入</option>
+                                <option value="expense">支出</option>
+                            </select>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">金额</label>
+                            <input type="number" step="0.01" min="0" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" required>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">描述</label>
+                            <textarea class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" rows="3" required></textarea>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">关联维修单</label>
+                            <select class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                                <option value="">无关联</option>
+                                <option value="20260301001">20260301001 - 李四</option>
+                                <option value="20260228001">20260228001 - 张三</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="p-6 border-t border-gray-200 flex justify-end space-x-3">
+                <button id="closeAddBtn" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">取消</button>
+                <button id="saveFinanceBtn" class="px-4 py-2 bg-primary hover:bg-primary/90 text-white font-medium rounded-md transition-colors duration-200">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 财务详情模态框 -->
+    <div id="financeDetailModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-lg w-full max-w-2xl">
+            <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                <h3 class="text-xl font-bold text-dark">财务详情</h3>
+                <button id="closeDetailModal" class="text-gray-500 hover:text-gray-700 focus:outline-none">
+                    <i class="fa fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <h4 class="text-sm font-medium text-gray-500 mb-2">日期</h4>
+                        <p class="text-sm text-gray-900">2026-03-01</p>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-medium text-gray-500 mb-2">类型</h4>
+                        <p class="text-sm text-gray-900">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">收入</span>
+                        </p>
+                    </div>
+                    <div class="md:col-span-2">
+                        <h4 class="text-sm font-medium text-gray-500 mb-2">金额</h4>
+                        <p class="text-sm text-gray-900">¥1,280.00</p>
+                    </div>
+                    <div class="md:col-span-2">
+                        <h4 class="text-sm font-medium text-gray-500 mb-2">描述</h4>
+                        <p class="text-sm text-gray-900">发动机故障维修</p>
+                    </div>
+                    <div class="md:col-span-2">
+                        <h4 class="text-sm font-medium text-gray-500 mb-2">关联维修单</h4>
+                        <p class="text-sm text-gray-900">20260301001 - 李四</p>
+                    </div>
+                    <div class="md:col-span-2">
+                        <h4 class="text-sm font-medium text-gray-500 mb-2">创建时间</h4>
+                        <p class="text-sm text-gray-900">2026-03-01 16:30:00</p>
+                    </div>
+                </div>
+            </div>
+            <div class="p-6 border-t border-gray-200 flex justify-end space-x-3">
+                <button id="closeDetailBtn" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 导出按钮点击事件
+        document.querySelectorAll('button').forEach(button => {
+            if (button.textContent.includes('导出')) {
+                button.addEventListener('click', function() {
+                    alert('导出财务记录');
+                });
+            } else if (button.textContent.includes('新增')) {
+                button.addEventListener('click', function() {
+                    document.getElementById('addFinanceModal').classList.remove('hidden');
+                });
+            }
+        });
+        
+        // 查看详情按钮点击事件
+        document.querySelectorAll('a[href="#"].text-primary').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.getElementById('financeDetailModal').classList.remove('hidden');
+            });
+        });
+        
+        // 关闭新增模态框
+        document.getElementById('closeAddModal').addEventListener('click', function() {
+            document.getElementById('addFinanceModal').classList.add('hidden');
+        });
+        
+        document.getElementById('closeAddBtn').addEventListener('click', function() {
+            document.getElementById('addFinanceModal').classList.add('hidden');
+        });
+        
+        // 保存新增财务记录
+        document.getElementById('saveFinanceBtn').addEventListener('click', function() {
+            alert('财务记录已添加');
+            document.getElementById('addFinanceModal').classList.add('hidden');
+        });
+        
+        // 关闭详情模态框
+        document.getElementById('closeDetailModal').addEventListener('click', function() {
+            document.getElementById('financeDetailModal').classList.add('hidden');
+        });
+        
+        document.getElementById('closeDetailBtn').addEventListener('click', function() {
+            document.getElementById('financeDetailModal').classList.add('hidden');
+        });
+        
+        // 初始化财务报表图表
+        window.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('financeChart').getContext('2d');
+            const financeChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['1月', '2月', '3月', '4月', '5月', '6月'],
+                    datasets: [
+                        {
+                            label: '收入',
+                            data: [110000, 120000, 128500, 0, 0, 0],
+                            backgroundColor: 'rgba(16, 185, 129, 0.6)',
+                            borderColor: 'rgba(16, 185, 129, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: '支出',
+                            data: [75000, 80000, 86200, 0, 0, 0],
+                            backgroundColor: 'rgba(239, 68, 68, 0.6)',
+                            borderColor: 'rgba(239, 68, 68, 1)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return '¥' + value.toLocaleString();
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: '2026年上半年财务收支情况'
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

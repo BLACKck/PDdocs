@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>车辆预约维修系统 - 在线沟通</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3b82f6',
+                        secondary: '#f59e0b',
+                        success: '#10b981',
+                        danger: '#ef4444',
+                        dark: '#1e293b',
+                        light: '#f8fafc'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- 导航栏 -->
+    <nav class="bg-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="对客前端-首页.html" class="flex-shrink-0 flex items-center">
+                        <i class="fa fa-car text-primary text-2xl mr-2"></i>
+                        <span class="text-xl font-bold text-dark">车辆预约维修系统</span>
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="对客前端-预约车辆维修页面.html" class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100">预约维修</a>
+                    <a href="对客前端-车辆信息管理页面.html" class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100">我的车辆</a>
+                    <a href="对客前端-预约管理页面.html" class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100">预约管理</a>
+                    <a href="对客前端-历史记录查询页面.html" class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100">历史记录</a>
+                    <div class="relative">
+                        <button type="button" class="flex items-center text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-md px-3 py-2">
+                            <i class="fa fa-user-circle text-lg mr-2"></i>
+                            <span>张三</span>
+                            <i class="fa fa-caret-down ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主内容区 -->
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold text-dark">在线沟通</h2>
+            <a href="对客前端-维修进度查询页面.html" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors duration-200">
+                <i class="fa fa-arrow-left mr-2"></i>返回
+            </a>
+        </div>
+
+        <!-- 聊天界面 -->
+        <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+            <!-- 聊天头部 -->
+            <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
+                <div class="flex items-center">
+                    <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mr-3">
+                        <i class="fa fa-user text-primary"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-md font-medium text-dark">北京海淀区门店</h3>
+                        <p class="text-xs text-gray-500">在线</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 聊天内容 -->
+            <div class="h-96 overflow-y-auto p-6 space-y-4">
+                <!-- 系统消息 -->
+                <div class="flex justify-center">
+                    <span class="px-3 py-1 bg-gray-100 text-gray-500 text-xs rounded-full">今天 10:00</span>
+                </div>
+
+                <!-- 客服消息 -->
+                <div class="flex">
+                    <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mr-3 flex-shrink-0">
+                        <i class="fa fa-user text-primary text-xs"></i>
+                    </div>
+                    <div class="max-w-[70%] bg-gray-100 rounded-lg p-3">
+                        <p class="text-sm text-gray-900">您好，欢迎咨询北京海淀区门店，请问有什么可以帮助您的？</p>
+                        <p class="text-xs text-gray-500 mt-1">10:00</p>
+                    </div>
+                </div>
+
+                <!-- 客户消息 -->
+                <div class="flex justify-end">
+                    <div class="max-w-[70%] bg-primary rounded-lg p-3">
+                        <p class="text-sm text-white">您好，我的车正在贵店维修，想了解一下维修进度。</p>
+                        <p class="text-xs text-white/70 mt-1">10:01</p>
+                    </div>
+                    <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center ml-3 flex-shrink-0">
+                        <i class="fa fa-user text-gray-500 text-xs"></i>
+                    </div>
+                </div>
+
+                <!-- 客服消息 -->
+                <div class="flex">
+                    <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mr-3 flex-shrink-0">
+                        <i class="fa fa-user text-primary text-xs"></i>
+                    </div>
+                    <div class="max-w-[70%] bg-gray-100 rounded-lg p-3">
+                        <p class="text-sm text-gray-900">好的，请问您的车牌号是多少？</p>
+                        <p class="text-xs text-gray-500 mt-1">10:02</p>
+                    </div>
+                </div>
+
+                <!-- 客户消息 -->
+                <div class="flex justify-end">
+                    <div class="max-w-[70%] bg-primary rounded-lg p-3">
+                        <p class="text-sm text-white">京B67890，丰田卡罗拉</p>
+                        <p class="text-xs text-white/70 mt-1">10:03</p>
+                    </div>
+                    <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center ml-3 flex-shrink-0">
+                        <i class="fa fa-user text-gray-500 text-xs"></i>
+                    </div>
+                </div>
+
+                <!-- 客服消息 -->
+                <div class="flex">
+                    <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mr-3 flex-shrink-0">
+                        <i class="fa fa-user text-primary text-xs"></i>
+                    </div>
+                    <div class="max-w-[70%] bg-gray-100 rounded-lg p-3">
+                        <p class="text-sm text-gray-900">您好，您的车辆正在维修中，维修师傅正在更换发动机零部件，预计今天下午13:00完成。</p>
+                        <p class="text-xs text-gray-500 mt-1">10:05</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 聊天输入框 -->
+            <div class="px-6 py-4 border-t border-gray-200">
+                <form id="chat-form" class="flex space-x-3">
+                    <input type="text" id="message" name="message" placeholder="请输入消息..." class="flex-1 px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                    <button type="submit" class="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white hover:bg-primary/90 transition-colors duration-200">
+                        <i class="fa fa-paper-plane"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-white border-t border-gray-200 mt-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="text-gray-500 text-sm">
+                    © 2026 车辆预约维修系统. 保留所有权利.
+                </div>
+                <div class="mt-4 md:mt-0">
+                    <a href="#" class="text-gray-500 hover:text-primary mr-4">关于我们</a>
+                    <a href="#" class="text-gray-500 hover:text-primary mr-4">服务条款</a>
+                    <a href="#" class="text-gray-500 hover:text-primary">联系我们</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        document.getElementById('chat-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const message = document.getElementById('message').value;
+            if (message) {
+                // 模拟发送消息
+                const chatContent = document.querySelector('.h-96');
+                const now = new Date();
+                const time = now.getHours() + ':' + (now.getMinutes() < 10 ? '0' : '') + now.getMinutes();
+                
+                // 添加客户消息
+                const customerMessage = `
+                    <div class="flex justify-end">
+                        <div class="max-w-[70%] bg-primary rounded-lg p-3">
+                            <p class="text-sm text-white">${message}</p>
+                            <p class="text-xs text-white/70 mt-1">${time}</p>
+                        </div>
+                        <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center ml-3 flex-shrink-0">
+                            <i class="fa fa-user text-gray-500 text-xs"></i>
+                        </div>
+                    </div>
+                `;
+                chatContent.insertAdjacentHTML('beforeend', customerMessage);
+                
+                // 清空输入框
+                document.getElementById('message').value = '';
+                
+                // 滚动到底部
+                chatContent.scrollTop = chatContent.scrollHeight;
+                
+                // 模拟客服回复
+                setTimeout(() => {
+                    const replyMessage = `
+                        <div class="flex">
+                            <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mr-3 flex-shrink-0">
+                                <i class="fa fa-user text-primary text-xs"></i>
+                            </div>
+                            <div class="max-w-[70%] bg-gray-100 rounded-lg p-3">
+                                <p class="text-sm text-gray-900">您好，我们已收到您的消息，会尽快为您处理。</p>
+                                <p class="text-xs text-gray-500 mt-1">${time}</p>
+                            </div>
+                        </div>
+                    `;
+                    chatContent.insertAdjacentHTML('beforeend', replyMessage);
+                    chatContent.scrollTop = chatContent.scrollHeight;
+                }, 1000);
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>车辆预约维修系统 - 预约维修</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3b82f6',
+                        secondary: '#f59e0b',
+                        success: '#10b981',
+                        danger: '#ef4444',
+                        dark: '#1e293b',
+                        light: '#f8fafc'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- 导航栏 -->
+    <nav class="bg-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="对客前端-首页.html" class="flex-shrink-0 flex items-center">
+                        <i class="fa fa-car text-primary text-2xl mr-2"></i>
+                        <span class="text-xl font-bold text-dark">车辆预约维修系统</span>
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="对客前端-预约车辆维修页面.html" class="px-3 py-2 rounded-md text-sm font-medium text-primary bg-primary/10">预约维修</a>
+                    <a href="对客前端-车辆信息管理页面.html" class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100">我的车辆</a>
+                    <a href="对客前端-预约管理页面.html" class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100">预约管理</a>
+                    <a href="对客前端-历史记录查询页面.html" class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100">历史记录</a>
+                    <div class="relative">
+                        <button type="button" class="flex items-center text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-md px-3 py-2">
+                            <i class="fa fa-user-circle text-lg mr-2"></i>
+                            <span>张三</span>
+                            <i class="fa fa-caret-down ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主内容区 -->
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="bg-white rounded-lg shadow-sm p-8">
+            <h2 class="text-2xl font-bold text-dark mb-6">预约维修服务</h2>
+            
+            <form id="appointment-form" class="space-y-6">
+                <!-- 选择车辆 -->
+                <div>
+                    <label for="vehicle" class="block text-sm font-medium text-gray-700 mb-1">选择车辆</label>
+                    <select id="vehicle" name="vehicle" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" required>
+                        <option value="">请选择车辆</option>
+                        <option value="1">京A12345 - 大众 帕萨特</option>
+                        <option value="2">京B67890 - 丰田 卡罗拉</option>
+                    </select>
+                </div>
+                
+                <!-- 维修类型 -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">维修类型</label>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="flex items-center">
+                            <input id="maintenance" name="service-type" type="radio" value="maintenance" class="h-4 w-4 text-primary focus:ring-primary border-gray-300">
+                            <label for="maintenance" class="ml-2 block text-sm text-gray-700">常规保养</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input id="repair" name="service-type" type="radio" value="repair" class="h-4 w-4 text-primary focus:ring-primary border-gray-300">
+                            <label for="repair" class="ml-2 block text-sm text-gray-700">故障维修</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input id="inspection" name="service-type" type="radio" value="inspection" class="h-4 w-4 text-primary focus:ring-primary border-gray-300">
+                            <label for="inspection" class="ml-2 block text-sm text-gray-700">车辆检测</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input id="other" name="service-type" type="radio" value="other" class="h-4 w-4 text-primary focus:ring-primary border-gray-300">
+                            <label for="other" class="ml-2 block text-sm text-gray-700">其他服务</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 服务门店 -->
+                <div>
+                    <label for="store" class="block text-sm font-medium text-gray-700 mb-1">服务门店</label>
+                    <select id="store" name="store" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" required>
+                        <option value="">请选择门店</option>
+                        <option value="1">北京朝阳区门店</option>
+                        <option value="2">北京海淀区门店</option>
+                        <option value="3">北京丰台区门店</option>
+                    </select>
+                </div>
+                
+                <!-- 预约日期 -->
+                <div>
+                    <label for="date" class="block text-sm font-medium text-gray-700 mb-1">预约日期</label>
+                    <input type="date" id="date" name="date" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" required>
+                </div>
+                
+                <!-- 预约时间 -->
+                <div>
+                    <label for="time" class="block text-sm font-medium text-gray-700 mb-1">预约时间</label>
+                    <select id="time" name="time" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" required>
+                        <option value="">请选择时间</option>
+                        <option value="09:00">09:00 - 10:00</option>
+                        <option value="10:00">10:00 - 11:00</option>
+                        <option value="11:00">11:00 - 12:00</option>
+                        <option value="14:00">14:00 - 15:00</option>
+                        <option value="15:00">15:00 - 16:00</option>
+                        <option value="16:00">16:00 - 17:00</option>
+                    </select>
+                </div>
+                
+                <!-- 故障描述 -->
+                <div>
+                    <label for="description" class="block text-sm font-medium text-gray-700 mb-1">故障描述（选填）</label>
+                    <textarea id="description" name="description" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="请简要描述车辆故障情况"></textarea>
+                </div>
+                
+                <!-- 联系方式 -->
+                <div>
+                    <label for="contact" class="block text-sm font-medium text-gray-700 mb-1">联系方式</label>
+                    <input type="tel" id="contact" name="contact" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="请输入您的联系电话" required>
+                </div>
+                
+                <!-- 提交按钮 -->
+                <div class="flex justify-end space-x-4">
+                    <a href="对客前端-首页.html" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors duration-200">
+                        取消
+                    </a>
+                    <button type="submit" class="px-4 py-2 bg-primary hover:bg-primary/90 text-white font-medium rounded-md transition-colors duration-200">
+                        提交预约
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-white border-t border-gray-200 mt-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="text-gray-500 text-sm">
+                    © 2026 车辆预约维修系统. 保留所有权利.
+                </div>
+                <div class="mt-4 md:mt-0">
+                    <a href="#" class="text-gray-500 hover:text-primary mr-4">关于我们</a>
+                    <a href="#" class="text-gray-500 hover:text-primary mr-4">服务条款</a>
+                    <a href="#" class="text-gray-500 hover:text-primary">联系我们</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- 提示信息组件 -->
+    <div id="toast" class="fixed top-4 right-4 p-4 rounded-md shadow-lg transform transition-all duration-300 translate-y-[-100px] opacity-0 z-50"></div>
+
+    <script>
+        // 显示提示信息
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = 'fixed top-4 right-4 p-4 rounded-md shadow-lg transform transition-all duration-300 z-50';
+            
+            if (type === 'success') {
+                toast.classList.add('bg-success', 'text-white');
+            } else if (type === 'error') {
+                toast.classList.add('bg-danger', 'text-white');
+            }
+            
+            // 显示提示
+            toast.classList.remove('translate-y-[-100px]', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+            
+            // 3秒后隐藏
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-[-100px]', 'opacity-0');
+            }, 3000);
+        }
+
+        document.getElementById('appointment-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // 模拟表单验证
+            const vehicle = document.getElementById('vehicle').value;
+            const serviceType = document.querySelector('input[name="service-type"]:checked');
+            const store = document.getElementById('store').value;
+            const date = document.getElementById('date').value;
+            const time = document.getElementById('time').value;
+            const contact = document.getElementById('contact').value;
+            
+            if (vehicle && serviceType && store && date && time && contact) {
+                // 显示成功提示
+                showToast('预约提交成功！我们会尽快与您联系确认。', 'success');
+                // 跳转到预约管理页面
+                setTimeout(() => {
+                    window.location.href = '对客前端-预约管理页面.html';
+                }, 1500);
+            } else {
+                showToast('请填写完整的预约信息', 'error');
+            }
+        });
+    </script>
+</body>
+</html>

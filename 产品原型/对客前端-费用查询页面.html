@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>车辆预约维修系统 - 费用查询</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3b82f6',
+                        secondary: '#f59e0b',
+                        success: '#10b981',
+                        danger: '#ef4444',
+                        dark: '#1e293b',
+                        light: '#f8fafc'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- 导航栏 -->
+    <nav class="bg-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="对客前端-首页.html" class="flex-shrink-0 flex items-center">
+                        <i class="fa fa-car text-primary text-2xl mr-2"></i>
+                        <span class="text-xl font-bold text-dark">车辆预约维修系统</span>
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="对客前端-预约车辆维修页面.html" class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100">预约维修</a>
+                    <a href="对客前端-车辆信息管理页面.html" class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100">我的车辆</a>
+                    <a href="对客前端-预约管理页面.html" class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100">预约管理</a>
+                    <a href="对客前端-历史记录查询页面.html" class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100">历史记录</a>
+                    <div class="relative">
+                        <button type="button" class="flex items-center text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-md px-3 py-2">
+                            <i class="fa fa-user-circle text-lg mr-2"></i>
+                            <span>张三</span>
+                            <i class="fa fa-caret-down ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主内容区 -->
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold text-dark">费用查询</h2>
+            <a href="对客前端-维修进度查询页面.html" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors duration-200">
+                <i class="fa fa-arrow-left mr-2"></i>返回
+            </a>
+        </div>
+
+        <!-- 费用详情 -->
+        <div class="bg-white rounded-lg shadow-sm p-6">
+            <!-- 维修信息 -->
+            <div class="mb-6 pb-6 border-b border-gray-200">
+                <h3 class="text-lg font-medium text-dark mb-4">维修信息</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-sm text-gray-600">维修编号</p>
+                        <p class="text-md font-medium text-dark">20260301001</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600">车辆信息</p>
+                        <p class="text-md font-medium text-dark">京B67890 - 丰田 卡罗拉</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600">维修类型</p>
+                        <p class="text-md font-medium text-dark">故障维修</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600">服务门店</p>
+                        <p class="text-md font-medium text-dark">北京海淀区门店</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 费用明细 -->
+            <div class="mb-6 pb-6 border-b border-gray-200">
+                <h3 class="text-lg font-medium text-dark mb-4">费用明细</h3>
+                <div class="space-y-3">
+                    <div class="flex justify-between">
+                        <span class="text-sm text-gray-600">发动机故障维修</span>
+                        <span class="text-sm text-gray-900">¥800.00</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-sm text-gray-600">发动机火花塞 × 4</span>
+                        <span class="text-sm text-gray-900">¥480.00</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-sm text-gray-600">工时费</span>
+                        <span class="text-sm text-gray-900">¥200.00</span>
+                    </div>
+                    <div class="flex justify-between pt-3 border-t border-gray-200">
+                        <span class="text-md font-medium text-dark">总计</span>
+                        <span class="text-md font-bold text-danger">¥1,480.00</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 支付状态 -->
+            <div class="mb-6">
+                <h3 class="text-lg font-medium text-dark mb-4">支付状态</h3>
+                <div class="flex items-center">
+                    <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm font-medium">待支付</span>
+                    <span class="ml-4 text-sm text-gray-600">请在取车前完成支付</span>
+                </div>
+            </div>
+
+            <!-- 操作按钮 -->
+            <div class="flex justify-end space-x-4">
+                <button class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors duration-200">
+                    <i class="fa fa-print mr-2"></i>打印账单
+                </button>
+                <button class="px-4 py-2 bg-primary hover:bg-primary/90 text-white font-medium rounded-md transition-colors duration-200">
+                    <i class="fa fa-credit-card mr-2"></i>在线支付
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-white border-t border-gray-200 mt-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="text-gray-500 text-sm">
+                    © 2026 车辆预约维修系统. 保留所有权利.
+                </div>
+                <div class="mt-4 md:mt-0">
+                    <a href="#" class="text-gray-500 hover:text-primary mr-4">关于我们</a>
+                    <a href="#" class="text-gray-500 hover:text-primary mr-4">服务条款</a>
+                    <a href="#" class="text-gray-500 hover:text-primary">联系我们</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // 在线支付按钮点击事件
+        document.querySelectorAll('button').forEach(button => {
+            if (button.querySelector('.fa-credit-card')) {
+                button.addEventListener('click', function() {
+                    alert('跳转到支付页面');
+                });
+            } else if (button.querySelector('.fa-print')) {
+                button.addEventListener('click', function() {
+                    alert('打印账单');
+                });
+            }
+        });
+    </script>
+</body>
+</html>
