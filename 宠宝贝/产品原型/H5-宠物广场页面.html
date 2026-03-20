@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>宠物广场 - 宠宝贝</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        /* 顶部导航栏 */
+        .header {
+            background-color: #FF6B6B;
+            color: white;
+            padding: 16px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        /* 搜索栏 */
+        .search-bar {
+            padding: 12px 16px;
+            background-color: white;
+            position: sticky;
+            top: 60px;
+            z-index: 90;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 10px 16px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            font-size: 14px;
+            background-color: #f8f8f8;
+        }
+        
+        /* 动态列表 */
+        .feed-list {
+            padding: 16px;
+        }
+        
+        /* 动态卡片 */
+        .feed-card {
+            background-color: white;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+        
+        .feed-header {
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 12px;
+        }
+        
+        .user-info {
+            flex: 1;
+        }
+        
+        .user-name {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+        
+        .post-time {
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .feed-content {
+            padding: 0 16px 12px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .feed-media {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .feed-actions {
+            padding: 12px 16px;
+            border-top: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-around;
+        }
+        
+        .action-item {
+            display: flex;
+            align-items: center;
+            color: #666;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        .action-item i {
+            margin-right: 6px;
+            font-size: 16px;
+        }
+        
+        .action-item.liked {
+            color: #FF6B6B;
+        }
+        
+        /* 发布按钮 */
+        .post-btn {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background-color: #FF6B6B;
+            color: white;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        
+        .post-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        /* 发布动态模态框 */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            z-index: 200;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-content {
+            background-color: white;
+            border-radius: 12px 12px 0 0;
+            padding: 24px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .close-btn {
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+        }
+        
+        /* 表单样式 */
+        .form-group {
+            margin-bottom: 16px;
+        }
+        
+        .form-textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            resize: none;
+            min-height: 120px;
+        }
+        
+        .form-btn {
+            width: 100%;
+            padding: 14px;
+            background-color: #FF6B6B;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 16px;
+        }
+        
+        .form-btn:hover {
+            background-color: #FF5252;
+        }
+        
+        /* 图片选择 */
+        .image-upload {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .upload-item {
+            width: 80px;
+            height: 80px;
+            border: 1px dashed #ddd;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .upload-item input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+        
+        .upload-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <div class="header">
+        宠物广场
+    </div>
+    
+    <!-- 搜索栏 -->
+    <div class="search-bar">
+        <input type="text" class="search-input" placeholder="搜索用户、话题或动态">
+    </div>
+    
+    <!-- 动态列表 -->
+    <div class="feed-list">
+        <!-- 动态卡片 1 -->
+        <div class="feed-card">
+            <div class="feed-header">
+                <img src="https://picsum.photos/id/64/100/100" alt="用户头像" class="user-avatar">
+                <div class="user-info">
+                    <div class="user-name">宠物爱好者</div>
+                    <div class="post-time">2小时前</div>
+                </div>
+            </div>
+            <div class="feed-content">
+                今天带小布丁去公园玩，它玩得可开心了！ #宠物日常 #拉布拉多
+            </div>
+            <img src="https://picsum.photos/id/237/600/400" alt="宠物照片" class="feed-media">
+            <div class="feed-actions">
+                <div class="action-item" onclick="toggleLike(this)">
+                    <i>❤</i>
+                    <span>128</span>
+                </div>
+                <div class="action-item" onclick="openComment()">
+                    <i>💬</i>
+                    <span>32</span>
+                </div>
+                <div class="action-item">
+                    <i>🔄</i>
+                    <span>分享</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 动态卡片 2 -->
+        <div class="feed-card">
+            <div class="feed-header">
+                <img src="https://picsum.photos/id/65/100/100" alt="用户头像" class="user-avatar">
+                <div class="user-info">
+                    <div class="user-name">猫奴一枚</div>
+                    <div class="post-time">4小时前</div>
+                </div>
+            </div>
+            <div class="feed-content">
+                花花今天又在沙发上睡着了，姿势太可爱了！ #猫咪 #英短
+            </div>
+            <img src="https://picsum.photos/id/40/600/400" alt="宠物照片" class="feed-media">
+            <div class="feed-actions">
+                <div class="action-item" onclick="toggleLike(this)">
+                    <i>❤</i>
+                    <span>256</span>
+                </div>
+                <div class="action-item" onclick="openComment()">
+                    <i>💬</i>
+                    <span>48</span>
+                </div>
+                <div class="action-item">
+                    <i>🔄</i>
+                    <span>分享</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 动态卡片 3 -->
+        <div class="feed-card">
+            <div class="feed-header">
+                <img src="https://picsum.photos/id/66/100/100" alt="用户头像" class="user-avatar">
+                <div class="user-info">
+                    <div class="user-name">宠物达人</div>
+                    <div class="post-time">6小时前</div>
+                </div>
+            </div>
+            <div class="feed-content">
+                推荐一款超级好用的宠物玩具，我家狗狗超级喜欢！ #宠物用品 #推荐
+            </div>
+            <img src="https://picsum.photos/id/26/600/400" alt="宠物玩具" class="feed-media">
+            <div class="feed-actions">
+                <div class="action-item" onclick="toggleLike(this)">
+                    <i>❤</i>
+                    <span>89</span>
+                </div>
+                <div class="action-item" onclick="openComment()">
+                    <i>💬</i>
+                    <span>21</span>
+                </div>
+                <div class="action-item">
+                    <i>🔄</i>
+                    <span>分享</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 发布按钮 -->
+    <div class="post-btn" onclick="openPostModal()">+</div>
+    
+    <!-- 发布动态模态框 -->
+    <div class="modal" id="postModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">发布动态</div>
+                <div class="close-btn" onclick="closePostModal()">&times;</div>
+            </div>
+            <form onsubmit="postFeed(event)">
+                <div class="form-group">
+                    <textarea class="form-textarea" id="feedContent" placeholder="分享你的宠物故事..." required></textarea>
+                </div>
+                <div class="image-upload">
+                    <div class="upload-item">
+                        <input type="file" accept="image/*" multiple>
+                        <i>+</i>
+                    </div>
+                </div>
+                <button type="submit" class="form-btn">发布</button>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        // 打开发布动态模态框
+        function openPostModal() {
+            document.getElementById('postModal').classList.add('show');
+        }
+        
+        // 关闭发布动态模态框
+        function closePostModal() {
+            document.getElementById('postModal').classList.remove('show');
+        }
+        
+        // 发布动态
+        function postFeed(event) {
+            event.preventDefault();
+            const content = document.getElementById('feedContent').value;
+            if (content.trim()) {
+                alert('动态发布成功！');
+                closePostModal();
+                // 清空表单
+                document.getElementById('feedContent').value = '';
+                // 刷新页面
+                location.reload();
+            }
+        }
+        
+        // 切换点赞状态
+        function toggleLike(element) {
+            element.classList.toggle('liked');
+            const likeCount = element.querySelector('span');
+            let count = parseInt(likeCount.textContent);
+            if (element.classList.contains('liked')) {
+                likeCount.textContent = count + 1;
+            } else {
+                likeCount.textContent = count - 1;
+            }
+        }
+        
+        // 打开评论
+        function openComment() {
+            alert('打开评论区');
+        }
+        
+        // 点击模态框外部关闭
+        window.onclick = function(event) {
+            const modal = document.getElementById('postModal');
+            if (event.target == modal) {
+                modal.classList.remove('show');
+            }
+        }
+    </script>
+</body>
+</html>

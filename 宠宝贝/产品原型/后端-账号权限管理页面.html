@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>账号权限管理 - 宠宝贝管理系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            display: flex;
+            height: 100vh;
+        }
+        
+        /* 左侧导航栏 */
+        .sidebar {
+            width: 240px;
+            background-color: #1E88E5;
+            color: white;
+            padding: 24px 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+        
+        .sidebar-header {
+            padding: 0 24px 24px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .sidebar-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .sidebar-menu {
+            margin-top: 24px;
+        }
+        
+        .menu-item {
+            padding: 12px 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .menu-item:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+        
+        .menu-item.active {
+            background-color: rgba(255,255,255,0.2);
+            border-left: 4px solid white;
+        }
+        
+        /* 主内容区 */
+        .main-content {
+            flex: 1;
+            margin-left: 240px;
+            padding: 24px;
+            overflow-y: auto;
+        }
+        
+        /* 顶部工具栏 */
+        .toolbar {
+            background-color: white;
+            padding: 16px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .toolbar-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .toolbar-actions {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background-color: #1E88E5;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #1976D2;
+        }
+        
+        .btn-default {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        
+        .btn-default:hover {
+            background-color: #e0e0e0;
+        }
+        
+        /* 搜索栏 */
+        .search-bar {
+            background-color: white;
+            padding: 16px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+            margin-bottom: 24px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        /* 数据表格 */
+        .data-table {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        /* 操作按钮 */
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .action-btn {
+            padding: 4px 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .action-btn:hover {
+            background-color: #f0f0f0;
+        }
+        
+        /* 分页 */
+        .pagination {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            margin-top: 16px;
+            gap: 8px;
+        }
+        
+        .page-btn {
+            padding: 4px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        .page-btn.active {
+            background-color: #1E88E5;
+            color: white;
+            border-color: #1E88E5;
+        }
+        
+        /* 模态框 */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-content {
+            background-color: white;
+            border-radius: 8px;
+            padding: 24px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .close-btn {
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+        }
+        
+        /* 表单样式 */
+        .form-group {
+            margin-bottom: 16px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 24px;
+        }
+        
+        /* 权限设置 */
+        .permission-setting {
+            margin-top: 24px;
+        }
+        
+        .permission-group {
+            margin-bottom: 16px;
+        }
+        
+        .permission-group-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .permission-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .permission-item input[type="checkbox"] {
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 左侧导航栏 -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">宠宝贝管理系统</div>
+        </div>
+        <div class="sidebar-menu">
+            <div class="menu-item" onclick="location.href='后端-宠物信息管理页面.html'">宠物信息管理</div>
+            <div class="menu-item active">账号权限管理</div>
+            <div class="menu-item" onclick="location.href='后端-商品库存管理页面.html'">商品库存管理</div>
+            <div class="menu-item" onclick="location.href='后端-订单系统管理页面.html'">订单系统管理</div>
+        </div>
+    </div>
+    
+    <!-- 主内容区 -->
+    <div class="main-content">
+        <!-- 顶部工具栏 -->
+        <div class="toolbar">
+            <div class="toolbar-title">账号权限管理</div>
+            <div class="toolbar-actions">
+                <button class="btn btn-default">导出</button>
+                <button class="btn btn-primary">添加用户</button>
+            </div>
+        </div>
+        
+        <!-- 搜索栏 -->
+        <div class="search-bar">
+            <input type="text" class="search-input" placeholder="搜索用户名、邮箱、手机号等">
+            <select class="form-input" style="width: 120px;">
+                <option value="">角色</option>
+                <option value="admin">管理员</option>
+                <option value="content">内容管理员</option>
+                <option value="operator">运营人员</option>
+            </select>
+            <button class="btn btn-primary">搜索</button>
+        </div>
+        
+        <!-- 数据表格 -->
+        <div class="data-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th><input type="checkbox"></th>
+                        <th>用户ID</th>
+                        <th>用户名</th>
+                        <th>邮箱</th>
+                        <th>手机号</th>
+                        <th>角色</th>
+                        <th>创建时间</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><input type="checkbox"></td>
+                        <td>1</td>
+                        <td>admin</td>
+                        <td>admin@example.com</td>
+                        <td>13800138000</td>
+                        <td>管理员</td>
+                        <td>2026-01-01 10:00:00</td>
+                        <td>
+                            <div class="action-buttons">
+                                <div class="action-btn" onclick="viewUser(1)">查看</div>
+                                <div class="action-btn" onclick="editUser(1)">编辑</div>
+                                <div class="action-btn" onclick="deleteUser(1)">删除</div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox"></td>
+                        <td>2</td>
+                        <td>content_admin</td>
+                        <td>content@example.com</td>
+                        <td>13900139000</td>
+                        <td>内容管理员</td>
+                        <td>2026-01-02 14:30:00</td>
+                        <td>
+                            <div class="action-buttons">
+                                <div class="action-btn" onclick="viewUser(2)">查看</div>
+                                <div class="action-btn" onclick="editUser(2)">编辑</div>
+                                <div class="action-btn" onclick="deleteUser(2)">删除</div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox"></td>
+                        <td>3</td>
+                        <td>operator</td>
+                        <td>operator@example.com</td>
+                        <td>13700137000</td>
+                        <td>运营人员</td>
+                        <td>2026-01-03 09:15:00</td>
+                        <td>
+                            <div class="action-buttons">
+                                <div class="action-btn" onclick="viewUser(3)">查看</div>
+                                <div class="action-btn" onclick="editUser(3)">编辑</div>
+                                <div class="action-btn" onclick="deleteUser(3)">删除</div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox"></td>
+                        <td>4</td>
+                        <td>test_user</td>
+                        <td>test@example.com</td>
+                        <td>13600136000</td>
+                        <td>运营人员</td>
+                        <td>2026-01-04 16:45:00</td>
+                        <td>
+                            <div class="action-buttons">
+                                <div class="action-btn" onclick="viewUser(4)">查看</div>
+                                <div class="action-btn" onclick="editUser(4)">编辑</div>
+                                <div class="action-btn" onclick="deleteUser(4)">删除</div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <!-- 分页 -->
+            <div class="pagination">
+                <span>共 12 条记录</span>
+                <button class="page-btn">上一页</button>
+                <button class="page-btn active">1</button>
+                <button class="page-btn">2</button>
+                <button class="page-btn">3</button>
+                <button class="page-btn">下一页</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 查看用户模态框 -->
+    <div class="modal" id="viewUserModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">用户详情</div>
+                <div class="close-btn" onclick="closeViewUserModal()">&times;</div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">用户名</label>
+                <input type="text" class="form-input" value="admin" disabled>
+            </div>
+            <div class="form-group">
+                <label class="form-label">邮箱</label>
+                <input type="text" class="form-input" value="admin@example.com" disabled>
+            </div>
+            <div class="form-group">
+                <label class="form-label">手机号</label>
+                <input type="text" class="form-input" value="13800138000" disabled>
+            </div>
+            <div class="form-group">
+                <label class="form-label">角色</label>
+                <input type="text" class="form-input" value="管理员" disabled>
+            </div>
+            <div class="form-group">
+                <label class="form-label">创建时间</label>
+                <input type="text" class="form-input" value="2026-01-01 10:00:00" disabled>
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-default" onclick="closeViewUserModal()">关闭</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 查看用户
+        function viewUser(id) {
+            document.getElementById('viewUserModal').classList.add('show');
+        }
+        
+        // 关闭查看用户模态框
+        function closeViewUserModal() {
+            document.getElementById('viewUserModal').classList.remove('show');
+        }
+        
+        // 编辑用户
+        function editUser(id) {
+            alert('编辑用户信息');
+        }
+        
+        // 删除用户
+        function deleteUser(id) {
+            if (confirm('确定要删除这个用户吗？')) {
+                alert('用户已删除');
+            }
+        }
+        
+        // 点击模态框外部关闭
+        window.onclick = function(event) {
+            const modals = document.getElementsByClassName('modal');
+            for (let i = 0; i < modals.length; i++) {
+                if (event.target == modals[i]) {
+                    modals[i].classList.remove('show');
+                }
+            }
+        }
+    </script>
+</body>
+</html>

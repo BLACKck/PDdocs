@@ -1,0 +1,46 @@
+@startuml
+
+' 系统整体流程图
+' 宠宝贝应用
+
+title 宠宝贝应用系统整体流程图
+
+' 定义参与者
+actor "用户" as User
+actor "管理员" as Admin
+package "H5前端" {
+  [我的宠物] as MyPet
+  [宠物广场] as PetSquare
+  [宠物商城] as PetMall
+}
+
+package "后端管理系统" {
+  [宠物信息管理] as PetInfoMgmt
+  [账号权限管理] as AccountMgmt
+  [商品库存管理] as ProductMgmt
+  [订单系统管理] as OrderMgmt
+}
+
+' 绘制流程
+User --> MyPet : 管理宠物信息
+User --> PetSquare : 浏览/发布动态
+User --> PetMall : 购买商品
+
+MyPet --> PetInfoMgmt : 提交宠物信息
+PetSquare --> PetInfoMgmt : 关联宠物信息
+PetMall --> ProductMgmt : 浏览商品
+PetMall --> OrderMgmt : 提交订单
+
+Admin --> PetInfoMgmt : 审核宠物信息
+Admin --> AccountMgmt : 管理用户账号
+Admin --> ProductMgmt : 管理商品库存
+Admin --> OrderMgmt : 处理订单
+
+' 样式设置
+skinparam backgroundColor white
+skinparam actorStyle awesome
+skinparam packageStyle rectangle
+skinparam nodeStyle rectangle
+skinparam arrowColor #333333
+
+@enduml

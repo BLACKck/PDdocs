@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商品库存管理 - 宠宝贝管理系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            display: flex;
+            height: 100vh;
+        }
+        
+        /* 左侧导航栏 */
+        .sidebar {
+            width: 240px;
+            background-color: #1E88E5;
+            color: white;
+            padding: 24px 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+        
+        .sidebar-header {
+            padding: 0 24px 24px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .sidebar-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .sidebar-menu {
+            margin-top: 24px;
+        }
+        
+        .menu-item {
+            padding: 12px 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .menu-item:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+        
+        .menu-item.active {
+            background-color: rgba(255,255,255,0.2);
+            border-left: 4px solid white;
+        }
+        
+        /* 主内容区 */
+        .main-content {
+            flex: 1;
+            margin-left: 240px;
+            padding: 24px;
+            overflow-y: auto;
+        }
+        
+        /* 顶部工具栏 */
+        .toolbar {
+            background-color: white;
+            padding: 16px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .toolbar-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .toolbar-actions {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background-color: #1E88E5;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #1976D2;
+        }
+        
+        .btn-default {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        
+        .btn-default:hover {
+            background-color: #e0e0e0;
+        }
+        
+        /* 搜索栏 */
+        .search-bar {
+            background-color: white;
+            padding: 16px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+            margin-bottom: 24px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        /* 数据表格 */
+        .data-table {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        /* 状态标签 */
+        .status-tag {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .status-normal {
+            background-color: #D4EDDA;
+            color: #155724;
+        }
+        
+        .status-low {
+            background-color: #FFF3CD;
+            color: #856404;
+        }
+        
+        .status-out {
+            background-color: #F8D7DA;
+            color: #721C24;
+        }
+        
+        /* 操作按钮 */
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .action-btn {
+            padding: 4px 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .action-btn:hover {
+            background-color: #f0f0f0;
+        }
+        
+        /* 分页 */
+        .pagination {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            margin-top: 16px;
+            gap: 8px;
+        }
+        
+        .page-btn {
+            padding: 4px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        .page-btn.active {
+            background-color: #1E88E5;
+            color: white;
+            border-color: #1E88E5;
+        }
+        
+        /* 模态框 */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-content {
+            background-color: white;
+            border-radius: 8px;
+            padding: 24px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .close-btn {
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+        }
+        
+        /* 表单样式 */
+        .form-group {
+            margin-bottom: 16px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 24px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 左侧导航栏 -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">宠宝贝管理系统</div>
+        </div>
+        <div class="sidebar-menu">
+            <div class="menu-item" onclick="location.href='后端-宠物信息管理页面.html'">宠物信息管理</div>
+            <div class="menu-item" onclick="location.href='后端-账号权限管理页面.html'">账号权限管理</div>
+            <div class="menu-item active">商品库存管理</div>
+            <div class="menu-item" onclick="location.href='后端-订单系统管理页面.html'">订单系统管理</div>
+        </div>
+    </div>
+    
+    <!-- 主内容区 -->
+    <div class="main-content">
+        <!-- 顶部工具栏 -->
+        <div class="toolbar">
+            <div class="toolbar-title">商品库存管理</div>
+            <div class="toolbar-actions">
+                <button class="btn btn-default">导出</button>
+                <button class="btn btn-primary">添加商品</button>
+            </div>
+        </div>
+        
+        <!-- 搜索栏 -->
+        <div class="search-bar">
+            <input type="text" class="search-input" placeholder="搜索商品名称、SKU等">
+            <select class="form-input" style="width: 120px;">
+                <option value="">分类</option>
+                <option value="food">食品</option>
+                <option value="supplies">用品</option>
+                <option value="toys">玩具</option>
+                <option value="medical">医疗</option>
+                <option value="clothing">服饰</option>
+            </select>
+            <select class="form-input" style="width: 120px;">
+                <option value="">库存状态</option>
+                <option value="normal">正常</option>
+                <option value="low">库存不足</option>
+                <option value="out">缺货</option>
+            </select>
+            <button class="btn btn-primary">搜索</button>
+        </div>
+        
+        <!-- 数据表格 -->
+        <div class="data-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th><input type="checkbox"></th>
+                        <th>商品ID</th>
+                        <th>商品名称</th>
+                        <th>分类</th>
+                        <th>价格</th>
+                        <th>库存</th>
+                        <th>状态</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><input type="checkbox"></td>
+                        <td>1</td>
+                        <td>宠物狗狗玩具耐咬球 泰迪金毛大型犬橡胶球</td>
+                        <td>玩具</td>
+                        <td>¥29.9</td>
+                        <td>150</td>
+                        <td><span class="status-tag status-normal">正常</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <div class="action-btn" onclick="viewProduct(1)">查看</div>
+                                <div class="action-btn" onclick="editProduct(1)">编辑</div>
+                                <div class="action-btn" onclick="deleteProduct(1)">删除</div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox"></td>
+                        <td>2</td>
+                        <td>皇家狗粮 中型犬成犬粮 10kg</td>
+                        <td>食品</td>
+                        <td>¥299.0</td>
+                        <td>50</td>
+                        <td><span class="status-tag status-normal">正常</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <div class="action-btn" onclick="viewProduct(2)">查看</div>
+                                <div class="action-btn" onclick="editProduct(2)">编辑</div>
+                                <div class="action-btn" onclick="deleteProduct(2)">删除</div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox"></td>
+                        <td>3</td>
+                        <td>宠物猫砂盆 封闭式猫厕所 防外溅猫砂盆</td>
+                        <td>用品</td>
+                        <td>¥129.0</td>
+                        <td>10</td>
+                        <td><span class="status-tag status-low">库存不足</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <div class="action-btn" onclick="viewProduct(3)">查看</div>
+                                <div class="action-btn" onclick="editProduct(3)">编辑</div>
+                                <div class="action-btn" onclick="deleteProduct(3)">删除</div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox"></td>
+                        <td>4</td>
+                        <td>宠物狗狗衣服 秋冬款保暖卫衣 中小型犬</td>
+                        <td>服饰</td>
+                        <td>¥59.9</td>
+                        <td>0</td>
+                        <td><span class="status-tag status-out">缺货</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <div class="action-btn" onclick="viewProduct(4)">查看</div>
+                                <div class="action-btn" onclick="editProduct(4)">编辑</div>
+                                <div class="action-btn" onclick="deleteProduct(4)">删除</div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <!-- 分页 -->
+            <div class="pagination">
+                <span>共 24 条记录</span>
+                <button class="page-btn">上一页</button>
+                <button class="page-btn active">1</button>
+                <button class="page-btn">2</button>
+                <button class="page-btn">3</button>
+                <button class="page-btn">下一页</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 查看商品模态框 -->
+    <div class="modal" id="viewProductModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">商品详情</div>
+                <div class="close-btn" onclick="closeViewProductModal()">&times;</div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">商品名称</label>
+                <input type="text" class="form-input" value="宠物狗狗玩具耐咬球 泰迪金毛大型犬橡胶球" disabled>
+            </div>
+            <div class="form-group">
+                <label class="form-label">分类</label>
+                <input type="text" class="form-input" value="玩具" disabled>
+            </div>
+            <div class="form-group">
+                <label class="form-label">价格</label>
+                <input type="text" class="form-input" value="¥29.9" disabled>
+            </div>
+            <div class="form-group">
+                <label class="form-label">库存</label>
+                <input type="text" class="form-input" value="150" disabled>
+            </div>
+            <div class="form-group">
+                <label class="form-label">状态</label>
+                <input type="text" class="form-input" value="正常" disabled>
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-default" onclick="closeViewProductModal()">关闭</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 查看商品
+        function viewProduct(id) {
+            document.getElementById('viewProductModal').classList.add('show');
+        }
+        
+        // 关闭查看商品模态框
+        function closeViewProductModal() {
+            document.getElementById('viewProductModal').classList.remove('show');
+        }
+        
+        // 编辑商品
+        function editProduct(id) {
+            alert('编辑商品信息');
+        }
+        
+        // 删除商品
+        function deleteProduct(id) {
+            if (confirm('确定要删除这个商品吗？')) {
+                alert('商品已删除');
+            }
+        }
+        
+        // 点击模态框外部关闭
+        window.onclick = function(event) {
+            const modals = document.getElementsByClassName('modal');
+            for (let i = 0; i < modals.length; i++) {
+                if (event.target == modals[i]) {
+                    modals[i].classList.remove('show');
+                }
+            }
+        }
+    </script>
+</body>
+</html>

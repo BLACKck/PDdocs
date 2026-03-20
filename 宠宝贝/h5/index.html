@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>宠宝贝</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        /* 顶部导航栏 */
+        .header {
+            background-color: #FFD43B; /* 闲鱼活力黄 */
+            color: #333;
+            padding: 16px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        /* 主内容区域 */
+        .main-content {
+            padding-bottom: 60px; /* 为底部Tab导航留出空间 */
+        }
+        
+        /* 底部Tab导航 */
+        .tab-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+            z-index: 90;
+        }
+        
+        .tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            color: #999;
+            transition: all 0.3s ease;
+        }
+        
+        .tab-item.active {
+            color: #FFD43B;
+        }
+        
+        .tab-icon {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+        
+        .tab-text {
+            font-size: 12px;
+        }
+        
+        /* 我的宠物页面样式 */
+        .pet-list {
+            padding: 16px;
+        }
+        
+        .pet-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: transform 0.2s ease;
+        }
+        
+        .pet-card:hover {
+            transform: translateY(-2px);
+        }
+        
+        .pet-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .pet-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 12px;
+            border: 2px solid #FFD43B;
+        }
+        
+        .pet-info {
+            flex: 1;
+        }
+        
+        .pet-name {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .pet-details {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .pet-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 12px;
+        }
+        
+        .action-btn {
+            flex: 1;
+            padding: 8px;
+            margin: 0 4px;
+            border: 1px solid #FFD43B;
+            border-radius: 4px;
+            background-color: white;
+            color: #FFD43B;
+            font-size: 14px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .action-btn:hover {
+            background-color: #FFD43B;
+            color: white;
+        }
+        
+        .add-pet-btn {
+            position: fixed;
+            bottom: 80px;
+            right: 24px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background-color: #FFD43B;
+            color: #333;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(255, 212, 59, 0.4);
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            z-index: 80;
+        }
+        
+        .add-pet-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 48px 16px;
+            color: #999;
+        }
+        
+        .empty-state img {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+        
+        /* 宠物广场页面样式 */
+        .search-bar {
+            padding: 12px 16px;
+            background-color: white;
+            position: sticky;
+            top: 60px;
+            z-index: 90;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 10px 16px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            font-size: 14px;
+            background-color: #f8f8f8;
+        }
+        
+        .feed-list {
+            padding: 16px;
+        }
+        
+        .feed-card {
+            background-color: white;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+        
+        .feed-header {
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 12px;
+        }
+        
+        .user-info {
+            flex: 1;
+        }
+        
+        .user-name {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+        
+        .post-time {
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .feed-content {
+            padding: 0 16px 12px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .feed-media {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .feed-actions {
+            padding: 12px 16px;
+            border-top: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-around;
+        }
+        
+        .action-item {
+            display: flex;
+            align-items: center;
+            color: #666;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        .action-item i {
+            margin-right: 6px;
+            font-size: 16px;
+        }
+        
+        .action-item.liked {
+            color: #FFD43B;
+        }
+        
+        .post-btn {
+            position: fixed;
+            bottom: 80px;
+            right: 24px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background-color: #FFD43B;
+            color: #333;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(255, 212, 59, 0.4);
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            z-index: 80;
+        }
+        
+        .post-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        /* 宠物商城页面样式 */
+        .category-nav {
+            background-color: white;
+            padding: 12px 0;
+            overflow-x: auto;
+            white-space: nowrap;
+            position: sticky;
+            top: 108px;
+            z-index: 80;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .category-item {
+            display: inline-block;
+            padding: 0 16px;
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+            padding-bottom: 8px;
+            margin: 0 4px;
+        }
+        
+        .category-item.active {
+            color: #FFD43B;
+            border-bottom: 2px solid #FFD43B;
+        }
+        
+        .product-list {
+            padding: 16px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+        
+        .product-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: transform 0.2s ease;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-2px);
+        }
+        
+        .product-image {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+        }
+        
+        .product-info {
+            padding: 12px;
+        }
+        
+        .product-name {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .product-price {
+            font-size: 16px;
+            font-weight: 600;
+            color: #FFD43B;
+        }
+        
+        .cart-btn {
+            position: fixed;
+            bottom: 80px;
+            right: 24px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background-color: #FFD43B;
+            color: #333;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(255, 212, 59, 0.4);
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            z-index: 80;
+        }
+        
+        .cart-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .cart-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background-color: #FF5252;
+            color: white;
+            font-size: 12px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* 模态框样式 */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-content {
+            background-color: white;
+            border-radius: 12px;
+            padding: 24px;
+            width: 90%;
+            max-width: 400px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .close-btn {
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+        }
+        
+        /* 表单样式 */
+        .form-group {
+            margin-bottom: 16px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        
+        .form-textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            resize: none;
+            min-height: 120px;
+        }
+        
+        .form-btn {
+            width: 100%;
+            padding: 14px;
+            background-color: #FFD43B;
+            color: #333;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 16px;
+        }
+        
+        .form-btn:hover {
+            background-color: #FFC107;
+        }
+        
+        /* 图片选择 */
+        .image-upload {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .upload-item {
+            width: 80px;
+            height: 80px;
+            border: 1px dashed #ddd;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .upload-item input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+        
+        .upload-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        
+        /* 购物车样式 */
+        .cart-item {
+            display: flex;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .cart-item-image {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-right: 12px;
+        }
+        
+        .cart-item-info {
+            flex: 1;
+        }
+        
+        .cart-item-name {
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        
+        .cart-item-price {
+            font-size: 16px;
+            font-weight: 600;
+            color: #FFD43B;
+            margin-bottom: 8px;
+        }
+        
+        .cart-item-quantity {
+            display: flex;
+            align-items: center;
+        }
+        
+        .quantity-btn {
+            width: 28px;
+            height: 28px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        
+        .quantity-input {
+            width: 40px;
+            height: 28px;
+            border: 1px solid #ddd;
+            border-left: none;
+            border-right: none;
+            text-align: center;
+            font-size: 14px;
+        }
+        
+        .cart-footer {
+            margin-top: 24px;
+            padding-top: 16px;
+            border-top: 1px solid #f0f0f0;
+        }
+        
+        .cart-total {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            font-size: 16px;
+        }
+        
+        .total-price {
+            font-weight: 600;
+            color: #FFD43B;
+        }
+        
+        .checkout-btn {
+            width: 100%;
+            padding: 14px;
+            background-color: #FFD43B;
+            color: #333;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .checkout-btn:hover {
+            background-color: #FFC107;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- 顶部导航栏 -->
+        <div class="header">{{ currentTab === 'pets' ? '我的宠物' : currentTab === 'feed' ? '宠物广场' : '宠物商城' }}</div>
+        
+        <!-- 主内容区域 -->
+        <div class="main-content">
+            <!-- 我的宠物页面 -->
+            <div v-if="currentTab === 'pets'">
+                <div class="pet-list">
+                    <div v-for="pet in pets" :key="pet.id" class="pet-card">
+                        <div class="pet-header">
+                            <img :src="pet.avatar" alt="宠物头像" class="pet-avatar">
+                            <div class="pet-info">
+                                <div class="pet-name">{{ pet.name }}</div>
+                                <div class="pet-details">品种：{{ pet.breed }} | 年龄：{{ pet.age }}岁</div>
+                            </div>
+                        </div>
+                        <div class="pet-actions">
+                            <div class="action-btn" @click="editPet(pet)">编辑</div>
+                            <div class="action-btn" @click="viewHealth(pet.id)">健康记录</div>
+                            <div class="action-btn" @click="viewAlbum(pet.id)">相册</div>
+                        </div>
+                    </div>
+                    
+                    <div v-if="pets.length === 0" class="empty-state">
+                        <img src="https://picsum.photos/id/237/200/200" alt="空状态">
+                        <p>还没有添加宠物，点击下方按钮添加</p>
+                    </div>
+                </div>
+                
+                <!-- 添加宠物按钮 -->
+                <div class="add-pet-btn" @click="openAddPetModal">+</div>
+            </div>
+            
+            <!-- 宠物广场页面 -->
+            <div v-if="currentTab === 'feed'">
+                <!-- 搜索栏 -->
+                <div class="search-bar">
+                    <input type="text" class="search-input" placeholder="搜索用户、话题或动态">
+                </div>
+                
+                <!-- 动态列表 -->
+                <div class="feed-list">
+                    <div v-for="feed in feeds" :key="feed.id" class="feed-card">
+                        <div class="feed-header">
+                            <img :src="feed.avatar" alt="用户头像" class="user-avatar">
+                            <div class="user-info">
+                                <div class="user-name">{{ feed.username }}</div>
+                                <div class="post-time">{{ feed.time }}</div>
+                            </div>
+                        </div>
+                        <div class="feed-content">{{ feed.content }}</div>
+                        <img :src="feed.image" alt="宠物照片" class="feed-media">
+                        <div class="feed-actions">
+                            <div class="action-item" :class="{ liked: feed.liked }" @click="toggleLike(feed)">
+                                <i>❤</i>
+                                <span>{{ feed.likes }}</span>
+                            </div>
+                            <div class="action-item" @click="openComment">
+                                <i>💬</i>
+                                <span>{{ feed.comments }}</span>
+                            </div>
+                            <div class="action-item">
+                                <i>🔄</i>
+                                <span>分享</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 发布按钮 -->
+                <div class="post-btn" @click="openPostModal">+</div>
+            </div>
+            
+            <!-- 宠物商城页面 -->
+            <div v-if="currentTab === 'shop'">
+                <!-- 搜索栏 -->
+                <div class="search-bar">
+                    <input type="text" class="search-input" placeholder="搜索宠物用品、食品、玩具等">
+                </div>
+                
+                <!-- 分类导航 -->
+                <div class="category-nav">
+                    <div v-for="category in categories" :key="category.id" class="category-item" :class="{ active: activeCategory === category.id }" @click="activeCategory = category.id">
+                        {{ category.name }}
+                    </div>
+                </div>
+                
+                <!-- 商品列表 -->
+                <div class="product-list">
+                    <div v-for="product in products" :key="product.id" class="product-card" @click="viewProduct(product.id)">
+                        <img :src="product.image" alt="宠物玩具" class="product-image">
+                        <div class="product-info">
+                            <div class="product-name">{{ product.name }}</div>
+                            <div class="product-price">{{ product.price }}</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 购物车按钮 -->
+                <div class="cart-btn" @click="openCartModal">
+                    🛒
+                    <div class="cart-badge" v-if="cartItems.length > 0">{{ cartItems.length }}</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 底部Tab导航 -->
+        <div class="tab-nav">
+            <div class="tab-item" :class="{ active: currentTab === 'pets' }" @click="currentTab = 'pets'">
+                <div class="tab-icon">🐶</div>
+                <div class="tab-text">我的宠物</div>
+            </div>
+            <div class="tab-item" :class="{ active: currentTab === 'feed' }" @click="currentTab = 'feed'">
+                <div class="tab-icon">📱</div>
+                <div class="tab-text">宠物广场</div>
+            </div>
+            <div class="tab-item" :class="{ active: currentTab === 'shop' }" @click="currentTab = 'shop'">
+                <div class="tab-icon">🛍️</div>
+                <div class="tab-text">宠物商城</div>
+            </div>
+        </div>
+        
+        <!-- 添加宠物模态框 -->
+        <div class="modal" :class="{ show: showAddPetModal }" @click="closeAddPetModal">
+            <div class="modal-content" @click.stop>
+                <div class="modal-header">
+                    <div class="modal-title">添加宠物</div>
+                    <div class="close-btn" @click="closeAddPetModal">&times;</div>
+                </div>
+                <form @submit.prevent="addPet">
+                    <div class="form-group">
+                        <label class="form-label">宠物名称</label>
+                        <input type="text" class="form-input" v-model="newPet.name" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">品种</label>
+                        <input type="text" class="form-input" v-model="newPet.breed" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">年龄</label>
+                        <input type="number" class="form-input" v-model="newPet.age" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">性别</label>
+                        <select class="form-input" v-model="newPet.gender" required>
+                            <option value="">请选择</option>
+                            <option value="male">公</option>
+                            <option value="female">母</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">宠物照片</label>
+                        <input type="file" class="form-input" accept="image/*" @change="handleFileUpload">
+                    </div>
+                    <button type="submit" class="form-btn">保存</button>
+                </form>
+            </div>
+        </div>
+        
+        <!-- 编辑宠物模态框 -->
+        <div class="modal" :class="{ show: showEditPetModal }" @click="closeEditPetModal">
+            <div class="modal-content" @click.stop>
+                <div class="modal-header">
+                    <div class="modal-title">编辑宠物信息</div>
+                    <div class="close-btn" @click="closeEditPetModal">&times;</div>
+                </div>
+                <form @submit.prevent="updatePet">
+                    <div class="form-group">
+                        <label class="form-label">宠物名称</label>
+                        <input type="text" class="form-input" v-model="editPet.name" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">品种</label>
+                        <input type="text" class="form-input" v-model="editPet.breed" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">年龄</label>
+                        <input type="number" class="form-input" v-model="editPet.age" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">性别</label>
+                        <select class="form-input" v-model="editPet.gender" required>
+                            <option value="">请选择</option>
+                            <option value="male">公</option>
+                            <option value="female">母</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">宠物照片</label>
+                        <input type="file" class="form-input" accept="image/*" @change="handleEditFileUpload">
+                    </div>
+                    <button type="submit" class="form-btn">保存</button>
+                </form>
+            </div>
+        </div>
+        
+        <!-- 发布动态模态框 -->
+        <div class="modal" :class="{ show: showPostModal }" @click="closePostModal">
+            <div class="modal-content" @click.stop>
+                <div class="modal-header">
+                    <div class="modal-title">发布动态</div>
+                    <div class="close-btn" @click="closePostModal">&times;</div>
+                </div>
+                <form @submit.prevent="postFeed">
+                    <div class="form-group">
+                        <textarea class="form-textarea" v-model="newFeed.content" placeholder="分享你的宠物故事..." required></textarea>
+                    </div>
+                    <div class="image-upload">
+                        <div class="upload-item">
+                            <input type="file" accept="image/*" multiple @change="handleFeedFileUpload">
+                            <i>+</i>
+                        </div>
+                    </div>
+                    <button type="submit" class="form-btn">发布</button>
+                </form>
+            </div>
+        </div>
+        
+        <!-- 购物车模态框 -->
+        <div class="modal" :class="{ show: showCartModal }" @click="closeCartModal">
+            <div class="modal-content" @click.stop>
+                <div class="modal-header">
+                    <div class="modal-title">购物车</div>
+                    <div class="close-btn" @click="closeCartModal">&times;</div>
+                </div>
+                
+                <!-- 购物车商品 -->
+                <div class="cart-items">
+                    <div v-for="item in cartItems" :key="item.id" class="cart-item">
+                        <img :src="item.image" alt="商品图片" class="cart-item-image">
+                        <div class="cart-item-info">
+                            <div class="cart-item-name">{{ item.name }}</div>
+                            <div class="cart-item-price">{{ item.price }}</div>
+                            <div class="cart-item-quantity">
+                                <div class="quantity-btn" @click="decreaseQuantity(item)">-</div>
+                                <input type="number" class="quantity-input" v-model="item.quantity" min="1">
+                                <div class="quantity-btn" @click="increaseQuantity(item)">+</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div v-if="cartItems.length === 0" class="empty-state">
+                        <p>购物车是空的</p>
+                    </div>
+                </div>
+                
+                <!-- 购物车底部 -->
+                <div class="cart-footer" v-if="cartItems.length > 0">
+                    <div class="cart-total">
+                        <span>合计：</span>
+                        <span class="total-price">{{ calculateTotal() }}</span>
+                    </div>
+                    <button class="checkout-btn" @click="checkout">去结算</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                currentTab: 'pets',
+                
+                // 我的宠物数据
+                pets: [
+                    {
+                        id: 1,
+                        name: '小布丁',
+                        breed: '拉布拉多',
+                        age: 2,
+                        gender: 'male',
+                        avatar: 'https://picsum.photos/id/237/200/200'
+                    },
+                    {
+                        id: 2,
+                        name: '花花',
+                        breed: '英短',
+                        age: 1,
+                        gender: 'female',
+                        avatar: 'https://picsum.photos/id/40/200/200'
+                    }
+                ],
+                
+                // 宠物广场数据
+                feeds: [
+                    {
+                        id: 1,
+                        username: '宠物爱好者',
+                        avatar: 'https://picsum.photos/id/64/100/100',
+                        time: '2小时前',
+                        content: '今天带小布丁去公园玩，它玩得可开心了！ #宠物日常 #拉布拉多',
+                        image: 'https://picsum.photos/id/237/600/400',
+                        likes: 128,
+                        comments: 32,
+                        liked: false
+                    },
+                    {
+                        id: 2,
+                        username: '猫奴一枚',
+                        avatar: 'https://picsum.photos/id/65/100/100',
+                        time: '4小时前',
+                        content: '花花今天又在沙发上睡着了，姿势太可爱了！ #猫咪 #英短',
+                        image: 'https://picsum.photos/id/40/600/400',
+                        likes: 256,
+                        comments: 48,
+                        liked: false
+                    },
+                    {
+                        id: 3,
+                        username: '宠物达人',
+                        avatar: 'https://picsum.photos/id/66/100/100',
+                        time: '6小时前',
+                        content: '推荐一款超级好用的宠物玩具，我家狗狗超级喜欢！ #宠物用品 #推荐',
+                        image: 'https://picsum.photos/id/26/600/400',
+                        likes: 89,
+                        comments: 21,
+                        liked: false
+                    }
+                ],
+                
+                // 宠物商城数据
+                categories: [
+                    { id: 'all', name: '全部' },
+                    { id: 'food', name: '食品' },
+                    { id: 'supplies', name: '用品' },
+                    { id: 'toys', name: '玩具' },
+                    { id: 'medical', name: '医疗' },
+                    { id: 'clothes', name: '服饰' },
+                    { id: 'other', name: '其他' }
+                ],
+                activeCategory: 'all',
+                products: [
+                    {
+                        id: 1,
+                        name: '宠物狗狗玩具耐咬球 泰迪金毛大型犬橡胶球',
+                        price: '¥29.9',
+                        image: 'https://picsum.photos/id/26/300/300',
+                        category: 'toys'
+                    },
+                    {
+                        id: 2,
+                        name: '皇家狗粮 中型犬成犬粮 10kg',
+                        price: '¥299.0',
+                        image: 'https://picsum.photos/id/292/300/300',
+                        category: 'food'
+                    },
+                    {
+                        id: 3,
+                        name: '宠物猫砂盆 封闭式猫厕所 防外溅猫砂盆',
+                        price: '¥129.0',
+                        image: 'https://picsum.photos/id/152/300/300',
+                        category: 'supplies'
+                    },
+                    {
+                        id: 4,
+                        name: '宠物狗狗衣服 秋冬款保暖卫衣 中小型犬',
+                        price: '¥59.9',
+                        image: 'https://picsum.photos/id/96/300/300',
+                        category: 'clothes'
+                    },
+                    {
+                        id: 5,
+                        name: '渴望猫粮 无谷天然粮 成猫幼猫通用 5.4kg',
+                        price: '¥499.0',
+                        image: 'https://picsum.photos/id/431/300/300',
+                        category: 'food'
+                    },
+                    {
+                        id: 6,
+                        name: '宠物猫抓板 瓦楞纸猫窝 磨爪器',
+                        price: '¥39.9',
+                        image: 'https://picsum.photos/id/40/300/300',
+                        category: 'supplies'
+                    }
+                ],
+                cartItems: [
+                    {
+                        id: 1,
+                        name: '宠物狗狗玩具耐咬球 泰迪金毛大型犬橡胶球',
+                        price: '¥29.9',
+                        image: 'https://picsum.photos/id/26/100/100',
+                        quantity: 1
+                    },
+                    {
+                        id: 2,
+                        name: '皇家狗粮 中型犬成犬粮 10kg',
+                        price: '¥299.0',
+                        image: 'https://picsum.photos/id/292/100/100',
+                        quantity: 1
+                    },
+                    {
+                        id: 3,
+                        name: '宠物猫砂盆 封闭式猫厕所 防外溅猫砂盆',
+                        price: '¥129.0',
+                        image: 'https://picsum.photos/id/152/100/100',
+                        quantity: 1
+                    }
+                ],
+                
+                // 模态框状态
+                showAddPetModal: false,
+                showEditPetModal: false,
+                showPostModal: false,
+                showCartModal: false,
+                
+                // 表单数据
+                newPet: {
+                    name: '',
+                    breed: '',
+                    age: '',
+                    gender: '',
+                    avatar: ''
+                },
+                editPet: {
+                    id: '',
+                    name: '',
+                    breed: '',
+                    age: '',
+                    gender: '',
+                    avatar: ''
+                },
+                newFeed: {
+                    content: '',
+                    image: ''
+                }
+            },
+            methods: {
+                // 我的宠物相关方法
+                openAddPetModal() {
+                    this.showAddPetModal = true;
+                    this.newPet = {
+                        name: '',
+                        breed: '',
+                        age: '',
+                        gender: '',
+                        avatar: ''
+                    };
+                },
+                closeAddPetModal() {
+                    this.showAddPetModal = false;
+                },
+                editPet(pet) {
+                    this.editPet = { ...pet };
+                    this.showEditPetModal = true;
+                },
+                closeEditPetModal() {
+                    this.showEditPetModal = false;
+                },
+                addPet() {
+                    const newId = this.pets.length + 1;
+                    this.pets.push({
+                        id: newId,
+                        ...this.newPet,
+                        avatar: this.newPet.avatar || 'https://picsum.photos/id/237/200/200'
+                    });
+                    this.showAddPetModal = false;
+                    alert('宠物添加成功！');
+                },
+                updatePet() {
+                    const index = this.pets.findIndex(pet => pet.id === this.editPet.id);
+                    if (index !== -1) {
+                        this.pets[index] = { ...this.editPet };
+                    }
+                    this.showEditPetModal = false;
+                    alert('宠物信息更新成功！');
+                },
+                viewHealth(id) {
+                    alert('查看宠物健康记录');
+                },
+                viewAlbum(id) {
+                    alert('查看宠物相册');
+                },
+                handleFileUpload(e) {
+                    // 模拟文件上传
+                    this.newPet.avatar = 'https://picsum.photos/id/237/200/200';
+                },
+                handleEditFileUpload(e) {
+                    // 模拟文件上传
+                    this.editPet.avatar = 'https://picsum.photos/id/237/200/200';
+                },
+                
+                // 宠物广场相关方法
+                openPostModal() {
+                    this.showPostModal = true;
+                    this.newFeed = {
+                        content: '',
+                        image: ''
+                    };
+                },
+                closePostModal() {
+                    this.showPostModal = false;
+                },
+                postFeed() {
+                    const newId = this.feeds.length + 1;
+                    this.feeds.unshift({
+                        id: newId,
+                        username: '我',
+                        avatar: 'https://picsum.photos/id/64/100/100',
+                        time: '刚刚',
+                        content: this.newFeed.content,
+                        image: this.newFeed.image || 'https://picsum.photos/id/237/600/400',
+                        likes: 0,
+                        comments: 0,
+                        liked: false
+                    });
+                    this.showPostModal = false;
+                    alert('动态发布成功！');
+                },
+                toggleLike(feed) {
+                    feed.liked = !feed.liked;
+                    feed.likes += feed.liked ? 1 : -1;
+                },
+                openComment() {
+                    alert('打开评论区');
+                },
+                handleFeedFileUpload(e) {
+                    // 模拟文件上传
+                    this.newFeed.image = 'https://picsum.photos/id/237/600/400';
+                },
+                
+                // 宠物商城相关方法
+                viewProduct(id) {
+                    alert('查看商品详情');
+                },
+                openCartModal() {
+                    this.showCartModal = true;
+                },
+                closeCartModal() {
+                    this.showCartModal = false;
+                },
+                increaseQuantity(item) {
+                    item.quantity++;
+                },
+                decreaseQuantity(item) {
+                    if (item.quantity > 1) {
+                        item.quantity--;
+                    }
+                },
+                calculateTotal() {
+                    let total = 0;
+                    this.cartItems.forEach(item => {
+                        const price = parseFloat(item.price.replace('¥', ''));
+                        total += price * item.quantity;
+                    });
+                    return '¥' + total.toFixed(1);
+                },
+                checkout() {
+                    alert('去结算页面');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

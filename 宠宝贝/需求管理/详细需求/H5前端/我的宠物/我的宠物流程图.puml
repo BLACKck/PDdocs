@@ -1,0 +1,59 @@
+@startuml
+
+' 我的宠物模块流程图
+' 宠宝贝应用H5前端
+
+title 我的宠物模块流程图
+
+actor "用户" as User
+
+start
+:用户登录;
+:进入我的宠物页面;
+
+if (是否有宠物信息) then (是)
+  :查看宠物列表;
+  :选择宠物;
+  :查看宠物详情;
+  
+  if (操作选择) then (编辑)
+    :编辑宠物信息;
+    :保存宠物信息;
+    :返回宠物列表;
+  else if (删除)
+    :确认删除;
+    :删除宠物信息;
+    :返回宠物列表;
+  else if (健康记录)
+    :进入健康记录页面;
+    :添加/编辑健康记录;
+    :保存健康记录;
+    :返回宠物详情;
+  else if (提醒)
+    :进入提醒设置页面;
+    :添加/编辑提醒;
+    :保存提醒设置;
+    :返回宠物详情;
+  else (相册)
+    :进入宠物相册页面;
+    :上传照片/视频;
+    :管理相册内容;
+    :返回宠物详情;
+  endif
+else (否)
+  :点击添加宠物按钮;
+  :填写宠物基本信息;
+  :上传宠物照片;
+  :保存宠物信息;
+  :返回宠物列表;
+endif
+
+stop
+
+' 样式设置
+skinparam backgroundColor white
+skinparam actorStyle awesome
+skinparam nodeStyle rectangle
+skinparam arrowColor #333333
+
+@enduml
