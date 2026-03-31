@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>贪吃蛇游戏 - 游戏结束</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .game-over-container {
+            background: linear-gradient(145deg, #0f3460, #16213e);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .game-logo {
+            font-size: 60px;
+            margin-bottom: 10px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .game-over-title {
+            font-size: 36px;
+            font-weight: bold;
+            color: #F44336;
+            text-shadow: 0 0 30px rgba(244, 67, 54, 0.5);
+            margin-bottom: 10px;
+        }
+
+        .game-over-subtitle {
+            font-size: 16px;
+            color: #aaa;
+            margin-bottom: 30px;
+        }
+
+        .score-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .final-score {
+            font-size: 64px;
+            font-weight: bold;
+            color: #FFC107;
+            text-shadow: 0 0 20px rgba(255, 193, 7, 0.5);
+            margin-bottom: 10px;
+        }
+
+        .score-label {
+            font-size: 18px;
+            color: #aaa;
+            margin-bottom: 20px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #4CAF50;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #aaa;
+        }
+
+        .btn-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 18px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+            font-size: 18px;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #FF9800, #f57c00);
+            color: white;
+            box-shadow: 0 5px 15px rgba(255, 152, 0, 0.3);
+        }
+
+        .btn-tertiary {
+            background: linear-gradient(135deg, #607D8B, #455A64);
+            color: white;
+            box-shadow: 0 5px 15px rgba(96, 125, 139, 0.3);
+        }
+
+        .new-record {
+            background: linear-gradient(135deg, #9C27B0, #7B1FA2);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 20px;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(156, 39, 176, 0.7);
+            }
+            70% {
+                transform: scale(1.05);
+                box-shadow: 0 0 0 10px rgba(156, 39, 176, 0);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(156, 39, 176, 0);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .game-over-container {
+                padding: 30px 20px;
+            }
+
+            .game-logo {
+                font-size: 50px;
+            }
+
+            .game-over-title {
+                font-size: 28px;
+            }
+
+            .final-score {
+                font-size: 48px;
+            }
+
+            .score-container {
+                padding: 20px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .btn {
+                padding: 16px 20px;
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-over-container">
+        <div class="game-logo">🐍</div>
+        <h1 class="game-over-title">游戏结束</h1>
+        <p class="game-over-subtitle">挑战结束，看看你的成绩</p>
+
+        <div class="score-container">
+            <div class="new-record" id="newRecord">🏆 新纪录！</div>
+            <div class="final-score" id="finalScore">520</div>
+            <div class="score-label">最终得分</div>
+
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value" id="gameTime">05:32</div>
+                    <div class="stat-label">游戏时长</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="foodEaten">48</div>
+                    <div class="stat-label">吃到食物</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="levelReached">5</div>
+                    <div class="stat-label">达到关卡</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="maxLength">50</div>
+                    <div class="stat-label">最大长度</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="btn-container">
+            <button class="btn btn-primary" onclick="playAgain()">
+                <span>▶️</span>
+                再玩一次
+            </button>
+            <button class="btn btn-secondary" onclick="changeDifficulty()">
+                <span>⚙️</span>
+                调整难度
+            </button>
+            <button class="btn btn-tertiary" onclick="backToMenu()">
+                <span>🏠</span>
+                返回主菜单
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function playAgain() {
+            console.log('再玩一次');
+            window.location.href = 'game.html';
+        }
+
+        function changeDifficulty() {
+            console.log('调整难度');
+            window.location.href = 'difficulty.html';
+        }
+
+        function backToMenu() {
+            window.location.href = 'index.html';
+        }
+
+        // 模拟加载游戏数据
+        function loadGameData() {
+            // 这里可以从localStorage或其他存储中加载游戏数据
+            const score = 520;
+            const gameTime = '05:32';
+            const foodEaten = 48;
+            const levelReached = 5;
+            const maxLength = 50;
+            
+            document.getElementById('finalScore').textContent = score;
+            document.getElementById('gameTime').textContent = gameTime;
+            document.getElementById('foodEaten').textContent = foodEaten;
+            document.getElementById('levelReached').textContent = levelReached;
+            document.getElementById('maxLength').textContent = maxLength;
+            
+            // 模拟新纪录
+            const isNewRecord = true;
+            if (!isNewRecord) {
+                document.getElementById('newRecord').style.display = 'none';
+            }
+        }
+
+        // 键盘控制
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                playAgain();
+            }
+            if (e.key === 'Escape') {
+                backToMenu();
+            }
+        });
+
+        // 加载游戏数据
+        window.onload = loadGameData;
+    </script>
+</body>
+</html>

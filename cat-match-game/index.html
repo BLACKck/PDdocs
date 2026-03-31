@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐱 霓虹猫咪对对碰 - Neon Cat Match</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="background-effects">
+        <div class="grid-lines"></div>
+        <div class="floating-particles"></div>
+        <div class="glow-overlay"></div>
+    </div>
+
+    <div class="game-container">
+        <header class="game-header">
+            <div class="logo">
+                <span class="neon-text">🐱 霓虹猫咪对对碰</span>
+                <span class="subtitle">NEON CAT MATCH</span>
+            </div>
+            <div class="stats">
+                <div class="stat-item">
+                    <span class="stat-label">分数</span>
+                    <span class="stat-value" id="score">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">关卡</span>
+                    <span class="stat-value" id="level">1</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">步数</span>
+                    <span class="stat-value" id="moves">30</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">目标</span>
+                    <span class="stat-value" id="target">1000</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="game-board-container">
+            <div class="game-board" id="gameBoard"></div>
+            <canvas id="effectsCanvas" class="effects-canvas"></canvas>
+        </div>
+
+        <div class="power-ups">
+            <button class="power-up" id="hammer" title="锤子 - 消除单个">
+                <span class="power-up-icon">🔨</span>
+                <span class="power-up-count">3</span>
+            </button>
+            <button class="power-up" id="bomb" title="炸弹 - 消除3x3">
+                <span class="power-up-icon">💣</span>
+                <span class="power-up-count">2</span>
+            </button>
+            <button class="power-up" id="shuffle" title="刷新 - 重新排列">
+                <span class="power-up-icon">🔄</span>
+                <span class="power-up-count">2</span>
+            </button>
+            <button class="power-up" id="rainbow" title="彩虹 - 消除所有同色">
+                <span class="power-up-icon">🌈</span>
+                <span class="power-up-count">1</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="modal" id="startModal">
+        <div class="modal-content neon-border">
+            <h2 class="neon-text">🐱 欢迎来到霓虹猫咪世界</h2>
+            <p>交换相邻的猫咪，让3个或以上相同的猫咪连成一线来消除它们！</p>
+            <div class="cat-preview">
+                <div class="cat-icon" style="background: linear-gradient(135deg, #FFE5D9, #FF6B35);">🍊</div>
+                <div class="cat-icon" style="background: linear-gradient(135deg, #E0F7FA, #4ECDC4);">💎</div>
+                <div class="cat-icon" style="background: linear-gradient(135deg, #F3E5F5, #9B59B6);">⭐</div>
+                <div class="cat-icon" style="background: linear-gradient(135deg, #FCE4EC, #FF69B4);">💕</div>
+                <div class="cat-icon" style="background: linear-gradient(135deg, #E8F5E9, #2ECC71);">🌿</div>
+                <div class="cat-icon" style="background: linear-gradient(135deg, #FFF9E6, #F1C40F);">☀️</div>
+            </div>
+            <button class="neon-button" id="startBtn">开始游戏</button>
+        </div>
+    </div>
+
+    <div class="modal hidden" id="gameOverModal">
+        <div class="modal-content neon-border">
+            <h2 class="neon-text" id="gameOverTitle">游戏结束</h2>
+            <p id="gameOverMessage">恭喜你完成了关卡！</p>
+            <div class="final-score">
+                <span>最终得分: </span>
+                <span class="neon-text" id="finalScore">0</span>
+            </div>
+            <button class="neon-button" id="restartBtn">再玩一次</button>
+        </div>
+    </div>
+
+    <div class="combo-display" id="comboDisplay"></div>
+
+    <script src="game.js"></script>
+</body>
+</html>

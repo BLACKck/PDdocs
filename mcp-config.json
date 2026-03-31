@@ -1,0 +1,22 @@
+{
+  "mcpServers": {
+    "feishu-remote": {
+      "url": "https://open.feishu.cn/open-apis/mcp/v1/tools",
+      "headers": {
+        "Authorization": "Bearer t-g1043tk6QLS5XCS6WMFV62U3DF3HZBHJETVWZ3QP"
+      }
+    }
+  },
+  "user_access_token": "u-53PcsDMqZaBXc.o377Derahg2b94g5UrUqGynAo02Lsx",
+  "refresh_token": "ur-5xooBMn6Re9WV6SGx3tYAHhg09zAg5gPoqGyjR802KcQ",
+  "token_expires_in": 6900,
+  "user_info": {
+    "name": "BLACK",
+    "en_name": "BLACK",
+    "user_id": "3gb37268",
+    "open_id": "ou_a19d54fc2942aa9f6112633cc9ea0ddc",
+    "union_id": "on_80862782ce54f95cd53a005c2e4a4621",
+    "mobile": "+8617671718907",
+    "avatar_url": "https://s3-imfile.feishucdn.com/static-resource/v1/v3_00d6_9491f6e5-5103-413d-82be-63a624bc882g~?image_size=72x72&cut_type=&quality=&format=image&sticker_format=.webp"
+  }
+}
