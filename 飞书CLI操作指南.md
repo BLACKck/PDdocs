@@ -168,23 +168,23 @@ lark-cli auth scopes
 
 | 应用名称 | APP ID | APP Secret | 用途 |
 |---------|---------|------------|------|
-| 应用 1 | cli_a94d456321b89cc5 | VqIdqBeLyM2sw6MT2Rh1xeH17EcQR2KV | 通用操作、文档查询、创建文档 |
-| 应用 2 | cli_a92fb9e90e799cb5 | 2PQierezFvaasuwPIBhqxeXDp4ELSO4n | 特殊权限操作、API 调用 |
+| 应用 1 | 你的appid | 你的appsecret | 通用操作、文档查询、创建文档 |
+| 应用 2 | 你的appid | 你的appsecret | 特殊权限操作、API 调用 |
 
 #### 用户信息
 
 | 用户名称 | User ID | 说明 |
 |---------|----------|------|
-| BLACK | ou_7ef0e95e4659569a31e4c61dc3568630 | 主要操作用户 |
+| BLACK | 你的用户ID| 主要操作用户 |
 
 #### 使用场景说明
 
-1. **应用 1（cli_a94d456321b89cc5）**：
+1. **应用 1（你的appid）**：
    - 适用于常规的文档查询、创建、更新操作
    - 使用 `lark-cli auth login --recommend` 授权时默认使用此应用
    - 适用于用户级别的操作
 
-2. **应用 2（cli_a92fb9e90e799cb5）**：
+2. **应用 2（你的appid）**：
    - 适用于需要特殊权限的操作
    - 使用 `lark-cli api` 命令时可能需要此应用的 tenant_access_token
    - 适用于应用级别的操作
@@ -198,12 +198,12 @@ lark-cli auth scopes
 
 ```bash
 # 切换到应用 1
-lark-cli config set app_id cli_a94d456321b89cc5
-lark-cli config set app_secret VqIdqBeLyM2sw6MT2Rh1xeH17EcQR2KV
+lark-cli config set app_id 你的appid
+lark-cli config set app_secret 你的appsecret
 
 # 切换到应用 2
-lark-cli config set app_id cli_a92fb9e90e799cb5
-lark-cli config set app_secret 2PQierezFvaasuwPIBhqxeXDp4ELSO4n
+lark-cli config set app_id 你的appid
+lark-cli config set app_secret 你的appsecret
 
 # 查看当前配置
 lark-cli config show
@@ -213,10 +213,10 @@ lark-cli config show
 
 ```bash
 # 使用应用 1 获取 tenant_access_token
-lark-cli api POST /open-apis/auth/v3/tenant_access_token/internal --data '{"app_id":"cli_a94d456321b89cc5","app_secret":"VqIdqBeLyM2sw6MT2Rh1xeH17EcQR2KV"}'
+lark-cli api POST /open-apis/auth/v3/tenant_access_token/internal --data '{"app_id":"你的appid","app_secret":"你的appsecret"}'
 
 # 使用应用 2 获取 tenant_access_token
-lark-cli api POST /open-apis/auth/v3/tenant_access_token/internal --data '{"app_id":"cli_a92fb9e90e799cb5","app_secret":"2PQierezFvaasuwPIBhqxeXDp4ELSO4n"}'
+lark-cli api POST /open-apis/auth/v3/tenant_access_token/internal --data '{"app_id":"你的appid","app_secret":"你的appsecret"}'
 ```
 
 #### 使用不同的身份执行 API 调用
@@ -252,7 +252,7 @@ lark-cli api GET /open-apis/wiki/v2/spaces
     "items": [
       {
         "name": "KAKA知识",
-        "space_id": "7418508651239784449",
+        "space_id": "741******449",
         "space_type": "team",
         "visibility": "public"
       }
@@ -268,7 +268,7 @@ lark-cli api GET /open-apis/wiki/v2/spaces
 lark-cli api GET "/open-apis/wiki/v2/spaces/{space_id}/nodes"
 
 # 示例
-lark-cli api GET "/open-apis/wiki/v2/spaces/7418508651239784449/nodes"
+lark-cli api GET "/open-apis/wiki/v2/spaces/7418*********449/nodes"
 ```
 
 ### 3.3 使用搜索功能查询文档（推荐）
@@ -296,9 +296,9 @@ lark-cli docs +search --query "企微RPA" --page-size 20
       {
         "entity_type": "WIKI",
         "result_meta": {
-          "token": "YSIEwzlV9iNTHHkzOeFcf0jWnIh",
-          "title_highlighted": "【售后企微群项目】企微群创建、分配及消息发送",
-          "url": "https://xxx.feishu.cn/wiki/YSIEwzlV9iNTHHkzOeFcf0jWnIh"
+          "token": "Y***********h",
+          "title_highlighted": "企微群项目",
+          "url": "https://xxx.feishu.cn/wiki/YSIE***********"
         }
       }
     ],
@@ -322,7 +322,7 @@ lark-cli docs +fetch --doc YSIEwzlV9iNTHHkzOeFcf0jWnIh
 {
   "ok": true,
   "data": {
-    "doc_id": "YSIEwzlV9iNTHHkzOeFcf0jWnIh",
+    "doc_id": "YSIE************f0jWnIh",
     "markdown": "# 文档标题\n\n文档内容...",
     "title": "文档标题",
     "total_length": 33473
@@ -561,14 +561,14 @@ lark-cli docs +create \
 ```bash
 # 步骤 4: 将 BLACK 用户添加为协作人
 lark-cli api POST "/open-apis/drive/v1/permissions/batch_create" \
-  --data '{"type":"docx","token":"{document_token}","members":[{"member_type":"user","member_id":"ou_7ef0e95e4659569a31e4c61dc3568630","role":"full_access"}]}'
+  --data '{"type":"docx","token":"{document_token}","members":[{"member_type":"user","member_id":"ou_**********30","role":"full_access"}]}'
 ```
 
 **示例**:
 ```bash
 # 为刚刚创建的俄罗斯方块需求文档添加 BLACK 用户为协作人
 lark-cli api POST "/open-apis/drive/v1/permissions/batch_create" \
-  --data '{"type":"docx","token":"NO8kwXrz0iO747klC7zcodnJnsf","members":[{"member_type":"user","member_id":"ou_7ef0e95e4659569a31e4c61dc3568630","role":"full_access"}]}'
+  --data '{"type":"docx","token":"NO8kwXrz0iO747klC7zcodnJnsf","members":[{"member_type":"user","member_id":"ou_***************0","role":"full_access"}]}'
 ```
 
 **预期输出**:
@@ -578,7 +578,7 @@ lark-cli api POST "/open-apis/drive/v1/permissions/batch_create" \
   "data": {
     "permissions": [
       {
-        "member_id": "ou_7ef0e95e4659569a31e4c61dc3568630",
+        "member_id": "ou_*************30",
         "member_type": "user",
         "role": "full_access"
       }
@@ -608,7 +608,7 @@ lark-cli docs +search --query "文档标题" --page-size 20
 #!/bin/bash
 
 # 配置
-SPACE_ID="7418508651239784449"
+SPACE_ID="74************9"
 OUTPUT_DIR="./wiki_export"
 
 # 创建输出目录
@@ -773,16 +773,6 @@ lark-cli docs +search --query "企微RPA" --page-size 20
 lark-cli docs +search --query "大模型外呼" --page-size 20
 # 返回 4 个文档
 ```
-
-### A.5 最终结果
-- **知识库空间**: 2 个
-- **KAKA 知识库文档总数**: 26 个
-  - 中心仓: 18 个文档
-  - 企微RPA项目: 3 个文档
-  - 大模型外呼: 4 个文档
-  - 俄罗斯方块: 1 个文档
-
----
 
 **文档版本**: 1.3  
 **最后更新**: 2026-03-29
